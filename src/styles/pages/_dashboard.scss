@@ -1,0 +1,41 @@
+.dashboard {
+  &__header {
+    margin: 15px auto;
+  }
+
+  &__user-data-info {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    align-items: center;
+    column-gap: $main-padding;
+
+    &__left {
+      width: 64px;
+      height: 64px;
+      border-radius: 64px;
+      overflow: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+
+  &__user-data-additional {
+    &__item {
+      display: flex;
+      flex-direction: column;
+
+      &-value {
+        font-size: toRem(24);
+        color: $main-color;
+        font-weight: 600;
+      }
+
+      &-name {
+        color: $secondary-color;
+      }
+    }
+  }
+}

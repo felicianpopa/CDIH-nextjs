@@ -1,0 +1,71 @@
+$primary: #14b8a6;
+$secondary: #6c757d;
+$success: #198754;
+$info: #0dcaf0;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #fff;
+$dark: #212529;
+
+$main-border-radius: 12px;
+
+// Font
+$base-font-size: 16;
+$font-family-base: "Inter", serif;
+$body-font-weight: 400;
+
+// General colors:
+$body-bg: #f8f8fb;
+$main-color: #1f2937;
+$secondary-color: #6b7280;
+
+//Header customization
+$header-bg: #fff;
+
+// Table customization
+$table-bg: #fff;
+$table-color: $main-color;
+$table-header-bg: #f9fafb;
+$table-header-color: $secondary-color;
+$table-header-filters-bg: #e5e7eb;
+$table-header-filters-color: $main-color;
+
+// Form customization
+$form-input-border-color: $primary;
+
+//Dropdown menu customization
+$dropdown-menu-bg: #fff;
+
+// Sidebar + main-navigation Customization
+$sidebar-width: 200px;
+$main-navigagion-transition-duration: 0.3s;
+$sidebar-main-bg: #334155;
+$main-navigation-color: #d1d5db;
+$main-navigation-color-hover: $primary;
+$main-navigation-color-active: #b0b747;
+$main-navigation-button-bg: transparent;
+$main-navigation-button-color: #0e2431;
+
+// Configurator
+$configuration-title-bg: transparent;
+$configuration-title-color: $main-color;
+$configuration-bg: #dfe3e9;
+$configuration-option-bg: #fff;
+$configuration-option-color: $main-color;
+$added-cost-bg: #75839e;
+$added-cost-color: #fff;
+$selected-configuration-color: $success;
+$configurator-border-radius: $main-border-radius;
+
+// Bootstrap mapping:
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  // "pink":       $pink,
+  "light": $light,
+  "dark": $dark,
+);

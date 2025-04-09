@@ -1,0 +1,28 @@
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+) !default;
+
+$main-padding: 24px !default;
+$main-border-radius: 12px !default;
+
+// COLORS
+$main-color: #1f2937 !default;
+$secondary-color: #6b7280 !default;
+
+// OTHER GENERAL SETTINGS
+$cards-border-color: #e5e7eb !default;
+
+// BOOTSTRAP CARD
+$card-spacer-x: $main-padding;
+$card-spacer-y: $main-padding;
+$card-border-width: 0;
+$card-bg: #fff;
+$card-border-radius: $main-border-radius;
+
+// BOOTSTRAP HEADINGS
+$headings-color: $main-color;

@@ -1,0 +1,20 @@
+@import "../branding/branding";
+@import "./variables";
+@import "./functions";
+@import "bootstrap/scss/bootstrap";
+@import "./reset";
+@import "./_general";
+// Insert modules here:
+@import "~Navigation/dist/style/style";
+@import "~FE-utils/dist/style/style";
+@import "~web-authentication/dist/style/style";
+@import "../../node_modules/Configurator/dist/style/style.scss";
+
+// End insert modules
+@import "./components/_header";
+@import "./components/_login";
+@import "./components/_tables";
+@import "./components/_datepicker";
+@import "./components/_bootstrap-components-override";
+@import "./pages/dashboard";
+@import "./pages/offer";

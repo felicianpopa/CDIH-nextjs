@@ -1,0 +1,10 @@
+table.table {
+  thead {
+    tr {
+      th {
+        background-color: $table-header-bg;
+        color: $table-header-color;
+      }
+    }
+  }
+}

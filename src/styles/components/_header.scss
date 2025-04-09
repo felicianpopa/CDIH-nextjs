@@ -1,0 +1,45 @@
+body {
+  padding-top: 80px;
+}
+
+.offcanvas-menu-open {
+  .main-header {
+    padding-left: $sidebar-width;
+  }
+}
+
+.offcanvas-menu {
+  z-index: 999;
+}
+
+.main-header {
+  z-index: 99;
+  padding: 15px 0 15px 45px;
+  background-color: $header-bg;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: padding-left $main-navigagion-transition-duration;
+  box-shadow: 0 2px 10px 0px rgb(0 0 0 / 15%);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+  }
+
+  .main-logo {
+    margin-left: 15px;
+    max-width: 120px;
+    max-height: 60px;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+
+  .my-account-navigation {
+    margin-left: auto;
+  }
+}
