@@ -236,14 +236,15 @@ const NewOffer = () => {
   }, []);
 
   const handleAddProductAction = (data: any) => {
-    setProducts((prevProducts) => {
-      const updatedProducts = [...prevProducts, data];
-      handleSaveDataAction(updatedProducts);
-      return updatedProducts;
-    });
+    // First update the products state
+    const updatedProducts = [...products, data];
+    setProducts(updatedProducts);
 
+    // Then call handleSaveDataAction with the updated products
+    handleSaveDataAction(updatedProducts);
+
+    // Close the modal
     if (typeof window !== "undefined" && modalRef.current) {
-      // Close the modal safely
       import("bootstrap")
         .then((bootstrap) => {
           if (bootstrap && bootstrap.Modal) {
@@ -285,52 +286,59 @@ const NewOffer = () => {
 
   const handleSaveDataAction = useCallback(
     (customProducts?: any[]) => {
-      setProducts((prevProducts) => {
-        const finalProducts = customProducts || prevProducts;
+      const finalProducts = customProducts || products;
+      const offerData: any = {
+        ...(selectedClient && { client: `/api/clients/${selectedClient}` }),
+        validUntill: validUntill,
+        status: orderStatus,
+        products: finalProducts.map((product) => {
+          const options: Record<string, any> = {};
 
-        const offerData: any = {
-          ...(selectedClient && { client: `/api/clients/${selectedClient}` }),
-          validUntill: validUntill,
-          status: orderStatus,
-          products: finalProducts.map((product) => {
-            const options: Record<string, any> = {};
+          if (product.options) {
+            Object.keys(product.options).forEach((key) => {
+              const option = product.options[key];
+              if (option?.value) {
+                const numericValue = /^[0-9]+$/.test(option.value)
+                  ? Number(option.value)
+                  : option.value;
+                options[key] = numericValue;
+              }
+            });
+          } else {
+            Object.keys(product).forEach((key) => {
+              const prop = product[key];
+              if (prop?.selectedValue) {
+                const numericValue = /^[0-9]+$/.test(prop.selectedValue)
+                  ? Number(prop.selectedValue)
+                  : prop.selectedValue;
+                options[key] = numericValue;
+              }
+            });
+          }
+          return { options };
+        }),
+        ...(offerId && { id: offerId }),
+      };
 
-            if (product.options) {
-              Object.keys(product.options).forEach((key) => {
-                const option = product.options[key];
-                if (option?.value) {
-                  const numericValue = /^[0-9]+$/.test(option.value)
-                    ? Number(option.value)
-                    : option.value;
-                  options[key] = numericValue;
-                }
-              });
-            } else {
-              Object.keys(product).forEach((key) => {
-                const prop = product[key];
-                if (prop?.selectedValue) {
-                  const numericValue = /^[0-9]+$/.test(prop.selectedValue)
-                    ? Number(prop.selectedValue)
-                    : prop.selectedValue;
-                  options[key] = numericValue;
-                }
-              });
-            }
-            return { options };
-          }),
-          ...(offerId && { id: offerId }),
-        };
+      if (customProducts) {
+        setProducts(customProducts);
+      }
 
-        if (offerId) {
-          editOfferMutation.mutate(offerData);
-        } else {
-          addOfferMutation.mutate(offerData);
-        }
-
-        return prevProducts;
-      });
+      if (offerId) {
+        editOfferMutation.mutate(offerData);
+      } else {
+        addOfferMutation.mutate(offerData);
+      }
     },
-    [selectedClient, validUntill, orderStatus, offerId]
+    [
+      selectedClient,
+      validUntill,
+      orderStatus,
+      offerId,
+      products,
+      editOfferMutation,
+      addOfferMutation,
+    ]
   );
 
   const {
