@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { Configurator } from "Configurator";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useCookies } from "react-cookie";
 import { useConfig } from "@/configurations/ConfigProvider";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useOffersApi from "@/api/offersApi";
 import useClientsApi from "@/api/clientsApi";
 import { ClientsMapper } from "@/data/ClientsMapper";
-import { DataCardSimple } from "FE-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSearchParams } from "next/navigation";
 import {
@@ -23,6 +22,30 @@ import {
 import Layout from "@/components/Layout";
 import RequireAuth from "@/components/RequireAuth";
 import { mainConfigurations } from "@/configurations/mainConfigurations";
+
+// Import other components dynamically
+const DataCardSimple = dynamic(
+  () => import("FE-utils").then((mod) => mod.DataCardSimple),
+  { ssr: false }
+);
+
+// Dynamically import Configurator with a wrapper component
+const ExternalConfigurator = dynamic(
+  () => import("Configurator").then((mod) => ({ default: mod.Configurator })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="text-center py-5">Loading configurator...</div>
+    ),
+  }
+);
+
+// Create a stable wrapper component for Configurator
+class ConfiguratorWrapper extends React.PureComponent {
+  render() {
+    return <ExternalConfigurator {...this.props} />;
+  }
+}
 
 const NewOffer = () => {
   const searchParams = useSearchParams();
@@ -40,6 +63,8 @@ const NewOffer = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [validUntill, setValidUntill] = useState("");
+  const [selectedClient, setSelectedClient] = useState("");
+  const [orderStatus, setOrderStatus] = useState("draft");
   const [offerSummary, setOfferSummary] = useState({
     subtotal: {
       label: "Subtotal",
@@ -116,14 +141,24 @@ const NewOffer = () => {
 
   const showAddOffer = () => {
     if (typeof window !== "undefined" && modalRef.current) {
-      // @ts-ignore - Bootstrap types are not available but this code would work in browser
-      const modal = new window.bootstrap.Modal(modalRef.current);
-      modal.show();
-      setIsModalVisible(true);
+      // Import Bootstrap dynamically and ensure it's available
+      import("bootstrap")
+        .then((bootstrap) => {
+          if (bootstrap && bootstrap.Modal) {
+            const modal = new bootstrap.Modal(modalRef.current);
+            modal.show();
+            setIsModalVisible(true);
 
-      modalRef.current.addEventListener("hidden.bs.modal", () => {
-        setIsModalVisible(false);
-      });
+            modalRef.current.addEventListener("hidden.bs.modal", () => {
+              setIsModalVisible(false);
+            });
+          } else {
+            console.error("Bootstrap Modal is not available");
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load Bootstrap:", err);
+        });
     }
   };
 
@@ -191,12 +226,33 @@ const NewOffer = () => {
     }
   };
 
-  const handleCalculatePriceAction = (data: any) => {
+  // Use memoized callbacks for Configurator props
+  const handleCalculatePriceAction = useCallback((data: any) => {
     const selectedOptions = { selectedOptions: {} };
     Object.entries(data).forEach(([key, value]: [string, any]) => {
       selectedOptions.selectedOptions[key] = value.selectedValue;
     });
     getPrice(selectedOptions);
+  }, []);
+
+  const handleAddProductAction = (data: any) => {
+    setProducts((prevProducts) => {
+      const updatedProducts = [...prevProducts, data];
+      handleSaveDataAction(updatedProducts);
+      return updatedProducts;
+    });
+
+    if (typeof window !== "undefined" && modalRef.current) {
+      // Close the modal safely
+      import("bootstrap")
+        .then((bootstrap) => {
+          if (bootstrap && bootstrap.Modal) {
+            const modal = bootstrap.Modal.getInstance(modalRef.current);
+            if (modal) modal.hide();
+          }
+        })
+        .catch(console.error);
+    }
   };
 
   const addOfferMutation = useMutation(addOffer, {
@@ -227,66 +283,55 @@ const NewOffer = () => {
     },
   });
 
-  const handleSaveDataAction = (customProducts?: any[]) => {
-    setProducts((prevProducts) => {
-      const finalProducts = customProducts || prevProducts;
+  const handleSaveDataAction = useCallback(
+    (customProducts?: any[]) => {
+      setProducts((prevProducts) => {
+        const finalProducts = customProducts || prevProducts;
 
-      const offerData: any = {
-        ...(selectedClient && { client: `/api/clients/${selectedClient}` }),
-        validUntill: validUntill,
-        status: orderStatus,
-        products: finalProducts.map((product) => {
-          const options: Record<string, any> = {};
+        const offerData: any = {
+          ...(selectedClient && { client: `/api/clients/${selectedClient}` }),
+          validUntill: validUntill,
+          status: orderStatus,
+          products: finalProducts.map((product) => {
+            const options: Record<string, any> = {};
 
-          if (product.options) {
-            Object.keys(product.options).forEach((key) => {
-              const option = product.options[key];
-              if (option?.value) {
-                const numericValue = /^[0-9]+$/.test(option.value)
-                  ? Number(option.value)
-                  : option.value;
-                options[key] = numericValue;
-              }
-            });
-          } else {
-            Object.keys(product).forEach((key) => {
-              const prop = product[key];
-              if (prop?.selectedValue) {
-                const numericValue = /^[0-9]+$/.test(prop.selectedValue)
-                  ? Number(prop.selectedValue)
-                  : prop.selectedValue;
-                options[key] = numericValue;
-              }
-            });
-          }
-          return { options };
-        }),
-        ...(offerId && { id: offerId }),
-      };
+            if (product.options) {
+              Object.keys(product.options).forEach((key) => {
+                const option = product.options[key];
+                if (option?.value) {
+                  const numericValue = /^[0-9]+$/.test(option.value)
+                    ? Number(option.value)
+                    : option.value;
+                  options[key] = numericValue;
+                }
+              });
+            } else {
+              Object.keys(product).forEach((key) => {
+                const prop = product[key];
+                if (prop?.selectedValue) {
+                  const numericValue = /^[0-9]+$/.test(prop.selectedValue)
+                    ? Number(prop.selectedValue)
+                    : prop.selectedValue;
+                  options[key] = numericValue;
+                }
+              });
+            }
+            return { options };
+          }),
+          ...(offerId && { id: offerId }),
+        };
 
-      if (offerId) {
-        editOfferMutation.mutate(offerData);
-      } else {
-        addOfferMutation.mutate(offerData);
-      }
+        if (offerId) {
+          editOfferMutation.mutate(offerData);
+        } else {
+          addOfferMutation.mutate(offerData);
+        }
 
-      return prevProducts;
-    });
-  };
-
-  const handleAddProductAction = (data: any) => {
-    setProducts((prevProducts) => {
-      const updatedProducts = [...prevProducts, data];
-      handleSaveDataAction(updatedProducts);
-      return updatedProducts;
-    });
-
-    if (typeof window !== "undefined" && modalRef.current) {
-      // @ts-ignore - Bootstrap types are not available
-      const modal = window.bootstrap.Modal.getInstance(modalRef.current);
-      if (modal) modal.hide();
-    }
-  };
+        return prevProducts;
+      });
+    },
+    [selectedClient, validUntill, orderStatus, offerId]
+  );
 
   const {
     data: offerData = {},
@@ -311,7 +356,7 @@ const NewOffer = () => {
   }, [offerData]);
 
   // Get clients
-  const [selectedClient, setSelectedClient] = useState("");
+
   const handleSelectClient = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedClient(e.target.value);
   };
@@ -335,9 +380,21 @@ const NewOffer = () => {
       )
     : [];
 
-  const [orderStatus, setOrderStatus] = useState("draft");
   const handleSelectOrderStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrderStatus(e.target.value);
+  };
+
+  // Create stable configurator props object
+  const configuratorProps = {
+    priceLoading,
+    configuratorLoading,
+    totalPrice: totalPrice || 0,
+    initialData,
+    data: configData,
+    saveDataAction: handleAddProductAction,
+    calculatePriceAction: handleCalculatePriceAction,
+    emitSelectedOptions: handleCalculatePriceAction,
+    showSaveButton: true,
   };
 
   return (
@@ -648,16 +705,8 @@ const NewOffer = () => {
                 </div>
                 <div className="modal-body">
                   <div className="container-fluid text-center">
-                    {isModalVisible && (
-                      <Configurator
-                        priceLoading={priceLoading}
-                        configuratorLoading={configuratorLoading}
-                        totalPrice={totalPrice}
-                        initialData={initialData}
-                        data={configData}
-                        saveDataAction={handleAddProductAction}
-                        calculatePriceAction={handleCalculatePriceAction}
-                      />
+                    {isModalVisible && configData && (
+                      <ConfiguratorWrapper {...configuratorProps} />
                     )}
                   </div>
                 </div>
