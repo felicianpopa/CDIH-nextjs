@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation"; // Changed from next/router to next/navigation
 import { useLogout } from "web-authentication";
 import { useConfig } from "../configurations/ConfigProvider";
 
@@ -12,7 +12,7 @@ const LogOut = ({ extraActions = () => {} }: LogOutProps) => {
   const config = useConfig();
   const [logoutStatus, setLogoutStatus] = useState<string | null>(null);
   const logOut = useLogout(config.server.apiUrl);
-  const router = useRouter();
+  const router = useRouter(); // This hook is from next/navigation now
 
   const handleClick = async () => {
     try {

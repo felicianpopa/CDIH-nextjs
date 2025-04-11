@@ -17,6 +17,7 @@ export function middleware(request: NextRequest) {
     "/offers/new-offer",
     "/products",
     "/products/new-product",
+    "/meetings",
   ];
 
   // Check if the current path is a protected route
@@ -27,12 +28,21 @@ export function middleware(request: NextRequest) {
   // If it's a protected route and there's no cookie, redirect to login
   if (isProtectedRoute && !bitUserCookie) {
     url.pathname = "/login";
+    // Add a redirect parameter to return to the original page after login
+    url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
   // If it's the login page and the user is already logged in, redirect to home
-  if (url.pathname === "/login" && bitUserCookie) {
-    url.pathname = "/";
+  if (
+    (url.pathname === "/login" || url.pathname === "/register") &&
+    bitUserCookie
+  ) {
+    // Check if there's a redirect parameter
+    const redirectTo = url.searchParams.get("redirectTo") || "/";
+    url.pathname = redirectTo;
+    // Clean up the URL by removing the redirectTo parameter
+    url.searchParams.delete("redirectTo");
     return NextResponse.redirect(url);
   }
 
@@ -48,7 +58,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files (public directory)
+     * - api routes (API endpoints)
      */
-    "/((?!_next/static|_next/image|favicon.ico|logo.webp).*)",
+    "/((?!_next/static|_next/image|favicon.ico|logo.webp|api).*)",
   ],
 };

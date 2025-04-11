@@ -1,7 +1,5 @@
-import { useAxiosPrivate } from "web-authentication";
-import { useConfig } from "../configurations/ConfigProvider";
-import { useCookies } from "react-cookie";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+// Remove the direct import of useConfig since it's already available through useAuth
 
 interface ClientsParams {
   page?: number;
@@ -10,59 +8,33 @@ interface ClientsParams {
 }
 
 const useClientsApi = () => {
-  const config = useConfig();
-  const axiosInstance = useAxiosPrivate(
-    config.server.apiUrl,
-    config.routes.refresh
-  );
-  const [cookies] = useCookies(["bitUser", "bitUserData"]);
-  const router = useRouter();
+  // Use the config from the useAuth hook instead
+  const { apiRequest, axiosInstance, config } = useAuth();
 
   const getClients = async (clientsParams: ClientsParams = {}) => {
     const { page = 1, items_per_page = 10, search = "" } = clientsParams;
-    const token = cookies.bitUser?.token;
-    const userId = cookies.bitUserData?.user_id;
-
-    if (!token || !userId) {
-      router.push("/login");
-      throw new Error("No authentication token or user ID found");
-    }
 
     try {
-      const response = await axiosInstance.get(
-        `/api/users/${userId}/clients?page=${page}&itemsPerPage=${items_per_page}&search=${search}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+      // Get the user ID from cookies instead of config
+      return await apiRequest(
+        `/api/users/${apiRequest.getUserId()}/clients?page=${page}&itemsPerPage=${items_per_page}&search=${search}`,
+        { method: "GET" }
       );
-      return response.data;
     } catch (error) {
       console.error("Error getting the clients:", error);
-      router.push("/login");
       throw error;
     }
   };
 
   const createClient = async (clientData: any) => {
-    const token = cookies.bitUser?.token;
-
-    if (!token) {
-      router.push("/login");
-      throw new Error("No authentication token found");
-    }
-
     try {
-      const response = await axiosInstance.post("/api/clients", clientData, {
+      return await apiRequest("/api/clients", {
+        method: "POST",
+        data: clientData,
         headers: {
           "Content-Type": "application/ld+json",
-          Authorization: `Bearer ${token}`,
         },
-        withCredentials: true,
       });
-      return response.data;
     } catch (error: any) {
       if (error.response?.status === 500) {
         return;
@@ -73,36 +45,29 @@ const useClientsApi = () => {
   };
 
   const saveEditClient = async (clientsParams: any) => {
-    const token = cookies.bitUser?.token;
-
-    if (!token) {
-      router.push("/login");
-      throw new Error("No authentication token found");
+    try {
+      return await apiRequest(`${clientsParams.id}`, {
+        method: "PATCH",
+        data: clientsParams,
+        headers: {
+          "Content-Type": "application/merge-patch+json",
+        },
+      });
+    } catch (error) {
+      console.error("Error updating client:", error);
+      throw error;
     }
-
-    return await axiosInstance.patch(`${clientsParams.id}`, clientsParams, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/merge-patch+json",
-      },
-      withCredentials: true,
-    });
   };
 
   const deleteClient = async (client: { id: string }) => {
-    const token = cookies.bitUser?.token;
-
-    if (!token) {
-      router.push("/login");
-      throw new Error("No authentication token found");
+    try {
+      return await apiRequest(`${client.id}`, {
+        method: "DELETE",
+      });
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      throw error;
     }
-
-    return await axiosInstance.delete(`${client.id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    });
   };
 
   return { getClients, saveEditClient, createClient, deleteClient };

@@ -1,8 +1,6 @@
 "use client";
 
-import { Login } from "web-authentication";
-import { useConfig } from "@/configurations/ConfigProvider";
-import { useRouter } from "next/navigation"; // Changed from next/router to next/navigation
+import NextLogin from "@/components/NextLogin";
 import Image from "next/image";
 
 const LoginHeader = () => {
@@ -16,24 +14,10 @@ const LoginHeader = () => {
 };
 
 const LoginPage = () => {
-  const config = useConfig();
-  const router = useRouter(); // This hook is from next/navigation now
-  console.warn(config.server.apiUrl);
-
-  const handleLoginSuccess = (data: any) => {
-    router.push("/");
-  };
-
   return (
-    <Login
-      loginUrl={config.routes.login}
-      cookiesAge={86400}
-      loginSuccess={handleLoginSuccess}
-      apiUrl={config.server.apiUrl}
-      getUserDataUrl={config.routes.getUserData}
-    >
+    <NextLogin>
       <LoginHeader />
-    </Login>
+    </NextLogin>
   );
 };
 
