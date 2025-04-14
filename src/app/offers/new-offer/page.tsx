@@ -23,6 +23,51 @@ import Layout from "@/components/Layout";
 import RequireAuth from "@/components/RequireAuth";
 import { mainConfigurations } from "@/configurations/mainConfigurations";
 
+// Define interfaces for the app
+interface ConfiguratorProps {
+  priceLoading: boolean;
+  configuratorLoading: boolean;
+  totalPrice: number;
+  initialData: any;
+  data: any;
+  saveDataAction: (data: any) => void;
+  calculatePriceAction: (data: any) => void;
+  emitSelectedOptions: (data: any) => void;
+  showSaveButton: boolean;
+}
+
+interface PriceValidationState {
+  status: {
+    label: string;
+    value: string;
+  };
+  suggestedPriceRange?: string;
+  data?: Array<{
+    title: string;
+    icon: string;
+    iconBg: string;
+    iconColor: string;
+    value: string;
+  }>;
+  historicalPerformance?: Array<{
+    label: string;
+    value: string;
+  }>;
+}
+
+interface Client {
+  id: string;
+  firstName: string;
+  lastName: string;
+  [key: string]: any;
+}
+
+interface Product {
+  options?: Record<string, any>;
+  image?: string;
+  [key: string]: any;
+}
+
 // Import other components dynamically
 const DataCardSimple = dynamic(
   () => import("FE-utils").then((mod) => mod.DataCardSimple),
@@ -41,7 +86,7 @@ const ExternalConfigurator = dynamic(
 );
 
 // Create a stable wrapper component for Configurator
-class ConfiguratorWrapper extends React.PureComponent {
+class ConfiguratorWrapper extends React.PureComponent<ConfiguratorProps> {
   render() {
     return <ExternalConfigurator {...this.props} />;
   }
@@ -55,13 +100,13 @@ const NewOffer = () => {
   const queryClient = useQueryClient();
   const [cookies] = useCookies(["bitUser", "bitUserData"]);
   const config = useConfig();
-  const [configData, setConfigData] = useState([]);
-  const [initialData, setInitialData] = useState(null);
+  const [configData, setConfigData] = useState<any[]>([]);
+  const [initialData, setInitialData] = useState<any>(null);
   const [totalPrice, setTotalPrice] = useState<number | null>(null);
   const [configuratorLoading, setConfiguratorLoading] = useState(false);
   const [priceLoading, setPriceLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [validUntill, setValidUntill] = useState("");
   const [selectedClient, setSelectedClient] = useState("");
   const [orderStatus, setOrderStatus] = useState("draft");
@@ -80,7 +125,7 @@ const NewOffer = () => {
     },
   });
 
-  const [priceValidation, setPriceValidation] = useState({
+  const [priceValidation, setPriceValidation] = useState<PriceValidationState>({
     status: {
       label: "In progress",
       value: "in_progress",
@@ -149,7 +194,8 @@ const NewOffer = () => {
             modal.show();
             setIsModalVisible(true);
 
-            modalRef.current.addEventListener("hidden.bs.modal", () => {
+            // Add null check before adding event listener
+            modalRef.current?.addEventListener("hidden.bs.modal", () => {
               setIsModalVisible(false);
             });
           } else {
@@ -228,7 +274,9 @@ const NewOffer = () => {
 
   // Use memoized callbacks for Configurator props
   const handleCalculatePriceAction = useCallback((data: any) => {
-    const selectedOptions = { selectedOptions: {} };
+    const selectedOptions: { selectedOptions: Record<string, any> } = {
+      selectedOptions: {},
+    };
     Object.entries(data).forEach(([key, value]: [string, any]) => {
       selectedOptions.selectedOptions[key] = value.selectedValue;
     });
@@ -285,7 +333,7 @@ const NewOffer = () => {
   });
 
   const handleSaveDataAction = useCallback(
-    (customProducts?: any[]) => {
+    (customProducts?: Product[]) => {
       const finalProducts = customProducts || products;
       const offerData: any = {
         ...(selectedClient && { client: `/api/clients/${selectedClient}` }),
@@ -296,7 +344,7 @@ const NewOffer = () => {
 
           if (product.options) {
             Object.keys(product.options).forEach((key) => {
-              const option = product.options[key];
+              const option = product.options?.[key];
               if (option?.value) {
                 const numericValue = /^[0-9]+$/.test(option.value)
                   ? Number(option.value)
@@ -393,7 +441,7 @@ const NewOffer = () => {
   };
 
   // Create stable configurator props object
-  const configuratorProps = {
+  const configuratorProps: ConfiguratorProps = {
     priceLoading,
     configuratorLoading,
     totalPrice: totalPrice || 0,
@@ -440,11 +488,13 @@ const NewOffer = () => {
                             onChange={handleSelectClient}
                           >
                             <option value="">Please select a client</option>
-                            {mappedClients.map((item, index) => (
-                              <option key={index} value={item.id}>
-                                {item.firstName} {item.lastName}
-                              </option>
-                            ))}
+                            {mappedClients.map(
+                              (item: Client, index: number) => (
+                                <option key={index} value={item.id}>
+                                  {item.firstName} {item.lastName}
+                                </option>
+                              )
+                            )}
                           </select>
                         </div>
                         <div className="col-12 col-md-6">
@@ -626,21 +676,17 @@ const NewOffer = () => {
                       ) : (
                         <div className="price-validation__body">
                           <div className="row gy-3">
-                            {(priceValidation as any).data?.map(
-                              (card: any, index: number) => (
-                                <div key={index} className="col-12 col-xl-6">
-                                  <DataCardSimple cardData={card} />
-                                </div>
-                              )
-                            )}
+                            {priceValidation.data?.map((card, index) => (
+                              <div key={index} className="col-12 col-xl-6">
+                                <DataCardSimple cardData={card} />
+                              </div>
+                            ))}
                           </div>
                           <div className="price-validation__footer">
                             <h4>Historical Performance</h4>
                             <ul className="mt-0">
-                              {(
-                                priceValidation as any
-                              ).historicalPerformance?.map(
-                                (item: any, index: number) => (
+                              {priceValidation.historicalPerformance?.map(
+                                (item, index) => (
                                   <li key={index} className="row gy-2">
                                     <div className="col-6">
                                       <span>{item.label}: </span>
