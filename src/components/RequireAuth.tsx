@@ -24,6 +24,10 @@ const RequireAuth = ({ children, allowedRoles }: RequireAuthProps) => {
 
     // First check if the user is authenticated at all
     if (isAuthenticated === false) {
+      // Store current path before redirecting
+      if (pathname !== "/login" && pathname !== "/register") {
+        sessionStorage.setItem("redirectAfterLogin", pathname);
+      }
       router.push("/login");
       return;
     }
@@ -35,6 +39,10 @@ const RequireAuth = ({ children, allowedRoles }: RequireAuthProps) => {
       );
 
       if (!hasRequiredRole) {
+        // Store current path before redirecting
+        if (pathname !== "/login" && pathname !== "/register") {
+          sessionStorage.setItem("redirectAfterLogin", pathname);
+        }
         router.push("/login");
       } else {
         setIsAuthorized(true);

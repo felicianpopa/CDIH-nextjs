@@ -1,54 +1,73 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useCookies } from "react-cookie";
 import { ReactNode, useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { Login } from "web-authentication";
+import { useConfig } from "@/configurations/ConfigProvider";
 
-interface RequireAuthProps {
+interface NextLoginProps {
   children: ReactNode;
-  allowedRoles: string[];
 }
 
-const RequireAuth = ({ children, allowedRoles }: RequireAuthProps) => {
-  const [cookies] = useCookies(["bitUserData"]);
-  const userCookies = cookies["bitUserData"];
+const NextLogin = ({ children }: NextLoginProps) => {
+  const config = useConfig();
   const router = useRouter();
-  const pathname = usePathname();
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
-  const { isAuthenticated } = useAuth();
+  const [previousPath, setPreviousPath] = useState<string | null>(null);
 
+  // Store the previous path when component mounts
   useEffect(() => {
-    setIsChecking(true);
-
-    // First check if the user is authenticated at all
-    if (isAuthenticated === false) {
-      router.push("/login");
-      return;
-    }
-
-    // Then check if they have the required role
-    if (isAuthenticated === true) {
-      const hasRequiredRole = userCookies?.user_roles?.find((role: string) =>
-        allowedRoles?.includes(role)
-      );
-
-      if (!hasRequiredRole) {
-        router.push("/login");
-      } else {
-        setIsAuthorized(true);
+    // Get the referrer from document.referrer if available
+    if (document.referrer) {
+      try {
+        const referrerUrl = new URL(document.referrer);
+        // Only consider referrers from the same origin
+        if (referrerUrl.origin === window.location.origin) {
+          // Extract just the path portion
+          setPreviousPath(referrerUrl.pathname);
+        }
+      } catch (e) {
+        console.error("Error parsing referrer:", e);
       }
     }
 
-    setIsChecking(false);
-  }, [isAuthenticated, userCookies, allowedRoles, router, pathname]);
+    // Check for previously stored path in sessionStorage
+    const storedPath = sessionStorage.getItem("redirectAfterLogin");
+    if (storedPath) {
+      setPreviousPath(storedPath);
+    }
+  }, []);
 
-  if (isAuthenticated === null || isChecking) {
-    return <div className="d-flex justify-content-center p-5">Loading...</div>;
-  }
+  const handleLoginSuccess = () => {
+    if (
+      previousPath &&
+      previousPath !== "/login" &&
+      previousPath !== "/register"
+    ) {
+      // Navigate to previous path
+      router.push(previousPath);
+      // Clean up the stored path
+      sessionStorage.removeItem("redirectAfterLogin");
+    } else {
+      // If no valid previous path, go to homepage
+      router.push("/");
+    }
+  };
 
-  return isAuthorized ? <>{children}</> : null;
+  return (
+    <div className="login-container">
+      <div className="login-form-wrapper">
+        {children}
+
+        <Login
+          cookiesAge={86400}
+          apiUrl={config.server.apiUrl}
+          loginUrl={config.routes.login}
+          loginSuccess={handleLoginSuccess}
+          getUserDataUrl="/api/me"
+        />
+      </div>
+    </div>
+  );
 };
 
-export default RequireAuth;
+export default NextLogin;

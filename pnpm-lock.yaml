@@ -43,7 +43,7 @@ importers:
         version: git+https://git@bitbucket.org:bootintech1/configurator.git#779f55fb27bdabb2b942bc81ad106e40fd05eb65(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       FE-utils:
         specifier: bitbucket:bootintech1/fe-utils#master
-        version: git+https://git@bitbucket.org:bootintech1/fe-utils.git#17e251df1b73bf7da827b394528bde365ac1221c(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       Navigation:
         specifier: bitbucket:bootintech1/navigation#main
         version: git+https://git@bitbucket.org:bootintech1/navigation.git#2c47d8b9986e972a5178037372666d84cd9dff27(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
@@ -106,7 +106,7 @@ importers:
         version: git+https://git@bitbucket.org:bootintech1/web-appointment-calendar-component.git#a93a7ad2e2c0c83d87ad0d89464ec7f7c47b205f(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react-onclickoutside@6.13.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       web-authentication:
         specifier: bitbucket:bootintech1/web-authentication#master
-        version: git+https://git@bitbucket.org:bootintech1/web-authentication.git#3a69ecbae49596cb3b60a7383cc3c9faac0cafd8(@popperjs/core@2.11.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
+        version: git+https://git@bitbucket.org:bootintech1/web-authentication.git#3a69ecbae49596cb3b60a7383cc3c9faac0cafd8(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       web-vitals:
         specifier: ^2.1.4
         version: 2.1.4
@@ -1389,16 +1389,9 @@ packages:
       react: '>=18.0.0 <20.0.0'
       react-dom: '>=18.0.0 <20.0.0'
 
-  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#00c40705d8111f1258ca4cb214c72df7f1f5ca3b:
-    resolution: {commit: 00c40705d8111f1258ca4cb214c72df7f1f5ca3b, repo: git@bitbucket.org:bootintech1/fe-utils.git, type: git}
-    version: 1.0.31
-    peerDependencies:
-      react: ^18.2.0
-      react-dom: ^18.2.0
-
-  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#17e251df1b73bf7da827b394528bde365ac1221c:
-    resolution: {commit: 17e251df1b73bf7da827b394528bde365ac1221c, repo: git@bitbucket.org:bootintech1/fe-utils.git, type: git}
-    version: 1.0.28
+  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505:
+    resolution: {commit: b8a2d6aeae0aacb78f421922715da36791fba505, repo: git@bitbucket.org:bootintech1/fe-utils.git, type: git}
+    version: 1.0.32
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -4968,7 +4961,7 @@ snapshots:
       - sass-embedded
       - webpack
 
-  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#00c40705d8111f1258ca4cb214c72df7f1f5ca3b(@popperjs/core@2.11.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fortawesome/fontawesome-svg-core': 6.7.2
@@ -4980,28 +4973,14 @@ snapshots:
       date-fns: 3.6.0
       prop-types: 15.8.1
       react: 19.1.0
+      react-bootstrap: 2.10.9(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-dom: 19.1.0(react@19.1.0)
       react-hook-form: 7.55.0(react@19.1.0)
       react-onclickoutside: 6.13.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-router-dom: 7.5.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
     transitivePeerDependencies:
       - '@popperjs/core'
-
-  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#17e251df1b73bf7da827b394528bde365ac1221c(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@fortawesome/fontawesome-svg-core': 6.7.2
-      '@fortawesome/free-solid-svg-icons': 6.7.2
-      '@fortawesome/react-fontawesome': 0.2.2(@fortawesome/fontawesome-svg-core@6.7.2)(react@19.1.0)
-      '@hookform/error-message': 2.0.1(react-dom@19.1.0(react@19.1.0))(react-hook-form@7.55.0(react@19.1.0))(react@19.1.0)
-      clsx: 2.1.1
-      date-fns: 3.6.0
-      prop-types: 15.8.1
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      react-hook-form: 7.55.0(react@19.1.0)
-      react-onclickoutside: 6.13.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react-router-dom: 7.5.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      - '@types/react'
 
   Navigation@git+https://git@bitbucket.org:bootintech1/navigation.git#2c47d8b9986e972a5178037372666d84cd9dff27(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
     dependencies:
@@ -7481,10 +7460,10 @@ snapshots:
       - supports-color
       - webpack
 
-  web-authentication@git+https://git@bitbucket.org:bootintech1/web-authentication.git#3a69ecbae49596cb3b60a7383cc3c9faac0cafd8(@popperjs/core@2.11.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
+  web-authentication@git+https://git@bitbucket.org:bootintech1/web-authentication.git#3a69ecbae49596cb3b60a7383cc3c9faac0cafd8(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      FE-utils: git+https://git@bitbucket.org:bootintech1/fe-utils.git#00c40705d8111f1258ca4cb214c72df7f1f5ca3b(@popperjs/core@2.11.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      FE-utils: git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       axios: 1.8.4
       clsx: 2.1.1
       date-fns: 3.6.0
@@ -7500,6 +7479,7 @@ snapshots:
     transitivePeerDependencies:
       - '@popperjs/core'
       - '@rspack/core'
+      - '@types/react'
       - debug
       - node-sass
       - react-native
