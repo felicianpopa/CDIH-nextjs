@@ -10,6 +10,11 @@ $grid-breakpoints: (
 $main-padding: 24px !default;
 $main-border-radius: 12px !default;
 
+// FONT FAMILY
+$font-family-base: var(--font-inter), system-ui, -apple-system,
+  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+  "Helvetica Neue", sans-serif !default;
+
 // COLORS
 $main-color: #1f2937 !default;
 $secondary-color: #6b7280 !default;
