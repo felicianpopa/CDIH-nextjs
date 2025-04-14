@@ -10,7 +10,9 @@ config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: "App Ofertare",
-  description: "Next.js migration of App Ofertare",
+  icons: {
+    icon: "/favicons/favicon.ico",
+  },
 };
 
 export default function RootLayout({
