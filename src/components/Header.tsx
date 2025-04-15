@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { Navigation } from "Navigation";
+import { Navigation } from "navigation-next";
 import LogOut from "./LogOut";
 import Link from "next/link";
 import { useCookies } from "react-cookie";

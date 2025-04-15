@@ -17,7 +17,13 @@ export function middleware(request: NextRequest) {
 
   // Define protected routes with role requirements
   const protectedRoutes: ProtectedRouteConfig[] = [
-    { path: "/" },
+    {
+      path: "/",
+      roles: [
+        mainConfigurations.user.roles.user,
+        mainConfigurations.user.roles.admin,
+      ],
+    },
     { path: "/greetings" },
     {
       path: "/account/my-account",
