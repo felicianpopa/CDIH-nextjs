@@ -1,4 +1,6 @@
-import { ReactNode } from "react";
+"use client";
+
+import { ReactNode, useEffect, useState } from "react";
 import Header from "./Header";
 import Container from "react-bootstrap/Container";
 import { useCookies } from "react-cookie";
@@ -10,13 +12,20 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const [cookies] = useCookies(["bitUser"]);
   const userCookies = cookies["bitUser"];
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Use useEffect to handle client-side rendering
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Only render Header on the client side to prevent hydration mismatch
   return (
     <>
-      {userCookies && <Header />}
-      <main>
+      {isMounted && userCookies && <Header />}
+      <div className="main-content">
         <Container fluid>{children}</Container>
-      </main>
+      </div>
     </>
   );
 };

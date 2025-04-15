@@ -1,0 +1,32 @@
+// Skeleton loading component styles
+.skeleton-card {
+  overflow: hidden;
+
+  .skeleton-loader {
+    height: 20px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background: linear-gradient(
+      90deg,
+      rgba(240, 240, 240, 0.6) 25%,
+      rgba(230, 230, 230, 0.8) 37%,
+      rgba(240, 240, 240, 0.6) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+  }
+
+  .header-loader {
+    height: 32px;
+    width: 60%;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

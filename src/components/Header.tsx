@@ -1,4 +1,6 @@
-import { useRef } from "react";
+"use client";
+
+import { useRef, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
@@ -9,6 +11,12 @@ import { useCookies } from "react-cookie";
 import Image from "next/image";
 
 const Header = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const links = [
     {
       name: "",
@@ -55,8 +63,13 @@ const Header = () => {
   const [cookies] = useCookies(["bitUser"]);
   const userCookies = cookies["bitUser"];
 
+  // Only render the component content after client-side hydration is complete
+  if (!isMounted) {
+    return null;
+  }
+
   return (
-    <header className="main-header">
+    <div className="main-header">
       <Container fluid>
         <div className="main-header__inner">
           <Navigation links={links} ref={navigationRef} />
@@ -96,7 +109,7 @@ const Header = () => {
           </div>
         </div>
       </Container>
-    </header>
+    </div>
   );
 };
 

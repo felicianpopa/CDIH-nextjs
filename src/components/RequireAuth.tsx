@@ -1,62 +1,22 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useCookies } from "react-cookie";
-import { ReactNode, useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { ReactNode } from "react";
 
 interface RequireAuthProps {
   children: ReactNode;
-  allowedRoles: string[];
+  allowedRoles?: string[]; // Kept for backwards compatibility, but server handles the validation now
 }
 
-const RequireAuth = ({ children, allowedRoles }: RequireAuthProps) => {
-  const [cookies] = useCookies(["bitUserData"]);
-  const userCookies = cookies["bitUserData"];
-  const router = useRouter();
-  const pathname = usePathname();
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
-  const { isAuthenticated } = useAuth();
+/**
+ * A simplified RequireAuth component that serves as a wrapper
+ * Authentication and Role validation is now handled by middleware at the server level
+ * This component is kept for backward compatibility
+ */
+const RequireAuth = ({ children }: RequireAuthProps) => {
+  // We don't need any checks here as the middleware already ensures
+  // that only authorized users with correct roles can access the page
 
-  useEffect(() => {
-    setIsChecking(true);
-
-    // First check if the user is authenticated at all
-    if (isAuthenticated === false) {
-      // Store current path before redirecting
-      if (pathname !== "/login" && pathname !== "/register") {
-        sessionStorage.setItem("redirectAfterLogin", pathname);
-      }
-      router.push("/login");
-      return;
-    }
-
-    // Then check if they have the required role
-    if (isAuthenticated === true) {
-      const hasRequiredRole = userCookies?.user_roles?.find((role: string) =>
-        allowedRoles?.includes(role)
-      );
-
-      if (!hasRequiredRole) {
-        // Store current path before redirecting
-        if (pathname !== "/login" && pathname !== "/register") {
-          sessionStorage.setItem("redirectAfterLogin", pathname);
-        }
-        router.push("/login");
-      } else {
-        setIsAuthorized(true);
-      }
-    }
-
-    setIsChecking(false);
-  }, [isAuthenticated, userCookies, allowedRoles, router, pathname]);
-
-  if (isAuthenticated === null || isChecking) {
-    return <div className="d-flex justify-content-center p-5">Loading...</div>;
-  }
-
-  return isAuthorized ? <>{children}</> : null;
+  return <>{children}</>;
 };
 
 export default RequireAuth;
