@@ -43,7 +43,7 @@ importers:
         version: git+https://git@bitbucket.org:bootintech1/configurator.git#779f55fb27bdabb2b942bc81ad106e40fd05eb65(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       FE-utils:
         specifier: bitbucket:bootintech1/fe-utils#master
-        version: git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       axios:
         specifier: ^1.6.0
         version: 1.8.4
@@ -64,7 +64,7 @@ importers:
         version: 12.2.0(less@4.3.0)(webpack@5.99.5)
       navigation-next:
         specifier: bitbucket:bootintech1/navigation-next#master
-        version: git+https://git@bitbucket.org:bootintech1/navigation-next.git#659fac410a8e7be2a8348781fc8b57bdd28d2650(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
+        version: git+https://git@bitbucket.org:bootintech1/navigation-next.git#cc6c71a384e80f9503718786d0a9d4b113cd74a9(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       next:
         specifier: 15.2.4
         version: 15.2.4(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.86.3)
@@ -1457,9 +1457,9 @@ packages:
       react: '>=18.0.0 <20.0.0'
       react-dom: '>=18.0.0 <20.0.0'
 
-  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505:
-    resolution: {commit: b8a2d6aeae0aacb78f421922715da36791fba505, repo: git@bitbucket.org:bootintech1/fe-utils.git, type: git}
-    version: 1.0.32
+  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac:
+    resolution: {commit: 416dd74839c1df1c8a54756636629ed6eb5a31ac, repo: git@bitbucket.org:bootintech1/fe-utils.git, type: git}
+    version: 1.0.34
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -2682,9 +2682,9 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#659fac410a8e7be2a8348781fc8b57bdd28d2650:
-    resolution: {commit: 659fac410a8e7be2a8348781fc8b57bdd28d2650, repo: git@bitbucket.org:bootintech1/navigation-next.git, type: git}
-    version: 1.0.1
+  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#cc6c71a384e80f9503718786d0a9d4b113cd74a9:
+    resolution: {commit: cc6c71a384e80f9503718786d0a9d4b113cd74a9, repo: git@bitbucket.org:bootintech1/navigation-next.git, type: git}
+    version: 1.1.1
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -5101,7 +5101,7 @@ snapshots:
       - sass-embedded
       - webpack
 
-  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fortawesome/fontawesome-svg-core': 6.7.2
@@ -6564,7 +6564,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#659fac410a8e7be2a8348781fc8b57bdd28d2650(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
+  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#cc6c71a384e80f9503718786d0a9d4b113cd74a9(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fortawesome/fontawesome-svg-core': 6.7.2
@@ -7642,7 +7642,7 @@ snapshots:
   web-authentication@git+https://git@bitbucket.org:bootintech1/web-authentication.git#3a69ecbae49596cb3b60a7383cc3c9faac0cafd8(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      FE-utils: git+https://git@bitbucket.org:bootintech1/fe-utils.git#b8a2d6aeae0aacb78f421922715da36791fba505(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      FE-utils: git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       axios: 1.8.4
       clsx: 2.1.1
       date-fns: 3.6.0

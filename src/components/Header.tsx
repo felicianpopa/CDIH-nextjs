@@ -1,22 +1,10 @@
-"use client";
-
-import { useRef, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import { Navigation } from "navigation-next";
-import LogOut from "./LogOut";
 import Link from "next/link";
-import { useCookies } from "react-cookie";
 import Image from "next/image";
+import HeaderDropdown from "./HeaderDropdown";
 
 const Header = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const links = [
     {
       name: "",
@@ -58,21 +46,11 @@ const Header = () => {
     { name: "settings", value: "/settings", label: "Settings", icon: "gear" },
   ];
 
-  const navigationRef = useRef<any>();
-
-  const [cookies] = useCookies(["bitUser"]);
-  const userCookies = cookies["bitUser"];
-
-  // Only render the component content after client-side hydration is complete
-  if (!isMounted) {
-    return null;
-  }
-
   return (
     <div className="main-header">
       <Container fluid>
         <div className="main-header__inner">
-          <Navigation links={links} ref={navigationRef} />
+          <Navigation links={links} />
           <Link href="/" className="main-logo">
             <Image
               src="/logo.webp"
@@ -82,31 +60,7 @@ const Header = () => {
               priority
             />
           </Link>
-          <div className="my-account-navigation">
-            <DropdownButton title="Account">
-              {userCookies && (
-                <>
-                  <Dropdown.Item as="div">
-                    <Link href="/account/my-profile">My Profile</Link>
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                </>
-              )}
-              <div className="dropdown-extra">
-                {userCookies ? (
-                  <LogOut
-                    extraActions={() => {
-                      navigationRef.current?.handleClose();
-                    }}
-                  />
-                ) : (
-                  <Link href="/login" className="btn btn-primary">
-                    Log in
-                  </Link>
-                )}
-              </div>
-            </DropdownButton>
-          </div>
+          <HeaderDropdown />
         </div>
       </Container>
     </div>

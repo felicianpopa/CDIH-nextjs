@@ -1,10 +1,7 @@
-"use client";
-
-import { DataCardSimple } from "FE-utils";
 import Layout from "@/components/Layout";
-import { useConfig } from "@/configurations/ConfigProvider";
 import { mainConfigurations } from "@/configurations/mainConfigurations";
 import RequireAuth from "@/components/RequireAuth";
+import DataCard from "@/components/ui/DataCard";
 
 const Home = () => {
   const dashboardCardData = [
@@ -110,13 +107,8 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="row gy-4">
-            {dashboardCardData.map((card, index) => (
-              <div key={index} className="col-12 col-md-4">
-                <DataCardSimple cardData={card} />
-              </div>
-            ))}
-          </div>
+
+          <DataCard cardsData={dashboardCardData} />
         </>
       </Layout>
     </RequireAuth>

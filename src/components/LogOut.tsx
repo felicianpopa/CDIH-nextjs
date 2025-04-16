@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { useRouter } from "next/navigation"; // Changed from next/router to next/navigation
