@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { DataTable } from "FE-utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useOffersApi from "@/api/offersApi";
@@ -99,17 +99,23 @@ const Offers = () => {
             <div>Error fetching offers: {(error as any)?.message}</div>
           )}
 
-          <DataTable
-            tableHeaderExtraActions={<ExtraComponent />}
-            tableHead={["Id", "Status", "Client", "Actions"]}
-            tableBody={mappedOffers}
-            shownElements={["id", "status", "client"]}
-            itemsPerPage={[5, 10, 20, 50]}
-            dataLoading={offersLoading}
-            onDataChange={handleDataChange}
-            totalItems={offersData["hydra:totalItems"]}
-            tableActions={tableActions}
-          />
+          <Suspense
+            fallback={
+              <div className="text-center py-5">Loading Data table...</div>
+            }
+          >
+            <DataTable
+              tableHeaderExtraActions={<ExtraComponent />}
+              tableHead={["Id", "Status", "Client", "Actions"]}
+              tableBody={mappedOffers}
+              shownElements={["id", "status", "client"]}
+              itemsPerPage={[5, 10, 20, 50]}
+              dataLoading={offersLoading}
+              onDataChange={handleDataChange}
+              totalItems={offersData["hydra:totalItems"]}
+              tableActions={tableActions}
+            />
+          </Suspense>
         </>
       </Layout>
     </RequireAuth>

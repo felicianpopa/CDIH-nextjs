@@ -44,6 +44,9 @@ importers:
       FE-utils:
         specifier: bitbucket:bootintech1/fe-utils#master
         version: git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      Frontend-utils:
+        specifier: github:bogdancosteabootintech/frontend-utils#main
+        version: git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#062bba8bc6dd3f987c6a2c0319205970b375aa03(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       axios:
         specifier: ^1.6.0
         version: 1.8.4
@@ -1469,6 +1472,13 @@ packages:
   FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac:
     resolution: {commit: 416dd74839c1df1c8a54756636629ed6eb5a31ac, repo: git@bitbucket.org:bootintech1/fe-utils.git, type: git}
     version: 1.0.34
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+
+  Frontend-utils@git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#062bba8bc6dd3f987c6a2c0319205970b375aa03:
+    resolution: {commit: 062bba8bc6dd3f987c6a2c0319205970b375aa03, repo: git@github.com:bogdancosteabootintech/frontend-utils.git, type: git}
+    version: 1.0.0
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -5180,6 +5190,27 @@ snapshots:
       - webpack
 
   FE-utils@git+https://git@bitbucket.org:bootintech1/fe-utils.git#416dd74839c1df1c8a54756636629ed6eb5a31ac(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    dependencies:
+      '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@fortawesome/fontawesome-svg-core': 6.7.2
+      '@fortawesome/free-solid-svg-icons': 6.7.2
+      '@fortawesome/react-fontawesome': 0.2.2(@fortawesome/fontawesome-svg-core@6.7.2)(react@19.1.0)
+      '@hookform/error-message': 2.0.1(react-dom@19.1.0(react@19.1.0))(react-hook-form@7.55.0(react@19.1.0))(react@19.1.0)
+      bootstrap: 5.3.5(@popperjs/core@2.11.8)
+      clsx: 2.1.1
+      date-fns: 3.6.0
+      prop-types: 15.8.1
+      react: 19.1.0
+      react-bootstrap: 2.10.9(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-dom: 19.1.0(react@19.1.0)
+      react-hook-form: 7.55.0(react@19.1.0)
+      react-onclickoutside: 6.13.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-router-dom: 7.5.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+    transitivePeerDependencies:
+      - '@popperjs/core'
+      - '@types/react'
+
+  Frontend-utils@git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#062bba8bc6dd3f987c6a2c0319205970b375aa03(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fortawesome/fontawesome-svg-core': 6.7.2

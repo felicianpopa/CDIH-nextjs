@@ -2,6 +2,8 @@ import Layout from "@/components/Layout";
 import { mainConfigurations } from "@/configurations/mainConfigurations";
 import RequireAuth from "@/components/RequireAuth";
 import DataCard from "@/components/ui/DataCard";
+import Kanban from "@/components/Kanban";
+import { Suspense } from "react";
 
 const Home = () => {
   const dashboardCardData = [
@@ -107,8 +109,12 @@ const Home = () => {
               </div>
             </div>
           </div>
-
-          <DataCard cardsData={dashboardCardData} />
+          <Suspense fallback="Loading Cards...">
+            <DataCard cardsData={dashboardCardData} />
+          </Suspense>
+          <Suspense fallback="Loading Kanban...">
+            <Kanban />
+          </Suspense>
         </>
       </Layout>
     </RequireAuth>
