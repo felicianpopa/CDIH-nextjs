@@ -81,15 +81,3 @@ h4 {
     transform: translateY(-50%);
   }
 }
-
-// Main content area styling (replacing main tag styles)
-.main-content {
-  padding-top: 20px;
-  min-height: 100vh;
-  margin-left: 70px; // Adjust this value based on your navigation width
-
-  @media (max-width: 768px) {
-    margin-left: 0;
-    padding-top: 100px; // Adjust for mobile header height
-  }
-}

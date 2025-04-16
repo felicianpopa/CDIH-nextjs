@@ -64,7 +64,7 @@ importers:
         version: 12.2.0(less@4.3.0)(webpack@5.99.5)
       navigation-next:
         specifier: bitbucket:bootintech1/navigation-next#master
-        version: git+https://git@bitbucket.org:bootintech1/navigation-next.git#af0a9f9912c9ace46bbdf772be768987fc7d4f81(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
+        version: git+https://git@bitbucket.org:bootintech1/navigation-next.git#22c061cca1bd1da7422f90556b4614fea02f786b(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       next:
         specifier: 15.2.4
         version: 15.2.4(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.86.3)
@@ -2714,9 +2714,9 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#af0a9f9912c9ace46bbdf772be768987fc7d4f81:
-    resolution: {commit: af0a9f9912c9ace46bbdf772be768987fc7d4f81, repo: git@bitbucket.org:bootintech1/navigation-next.git, type: git}
-    version: 1.1.3
+  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#22c061cca1bd1da7422f90556b4614fea02f786b:
+    resolution: {commit: 22c061cca1bd1da7422f90556b4614fea02f786b, repo: git@bitbucket.org:bootintech1/navigation-next.git, type: git}
+    version: 1.1.5
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -6661,7 +6661,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#af0a9f9912c9ace46bbdf772be768987fc7d4f81(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
+  navigation-next@git+https://git@bitbucket.org:bootintech1/navigation-next.git#22c061cca1bd1da7422f90556b4614fea02f786b(@babel/core@7.26.10)(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fortawesome/fontawesome-svg-core': 6.7.2

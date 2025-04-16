@@ -50,7 +50,12 @@ const Header = () => {
     <div className="main-header">
       <Container fluid>
         <div className="main-header__inner">
-          <Navigation links={links} defaultOpen={true} />
+          <Navigation
+            links={links}
+            usePortal={false}
+            defaultOpen={true}
+            LinkComponent={Link}
+          />
           <Link href="/" className="main-logo">
             <Image
               src="/logo.webp"

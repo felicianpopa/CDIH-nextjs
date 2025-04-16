@@ -35,6 +35,8 @@ declare module "navigation-next" {
         icon: string;
       }>;
       defaultOpen: boolean;
+      usePortal: boolean;
+      LinkComponent?: any;
     } & React.RefAttributes<any>
   >;
 }
