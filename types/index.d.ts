@@ -19,6 +19,22 @@ declare module "Navigation" {
         label: string;
         icon: string;
       }>;
+      defaultOpen: boolean;
+    } & React.RefAttributes<any>
+  >;
+}
+
+// Adding declaration for navigation-next to match the import
+declare module "navigation-next" {
+  export const Navigation: React.ForwardRefExoticComponent<
+    {
+      links: Array<{
+        name: string;
+        value: string;
+        label: string;
+        icon: string;
+      }>;
+      defaultOpen: boolean;
     } & React.RefAttributes<any>
   >;
 }

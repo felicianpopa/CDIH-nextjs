@@ -26,7 +26,7 @@ interface OfferResponse {
 export async function createOffer(
   formData: OfferFormData
 ): Promise<OfferResponse> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("bitUser")?.value;
   const tokenData = token ? JSON.parse(decodeURIComponent(token)) : null;
 
@@ -71,7 +71,7 @@ export async function updateOffer(
   offerId: string,
   formData: OfferFormData
 ): Promise<OfferResponse> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("bitUser")?.value;
   const tokenData = token ? JSON.parse(decodeURIComponent(token)) : null;
 
@@ -114,7 +114,7 @@ export async function updateOffer(
  * Get offer details - this can be used for initial data loading
  */
 export async function getOfferDetails(offerId: string): Promise<OfferResponse> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("bitUser")?.value;
   const tokenData = token ? JSON.parse(decodeURIComponent(token)) : null;
 

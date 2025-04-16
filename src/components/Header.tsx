@@ -50,7 +50,7 @@ const Header = () => {
     <div className="main-header">
       <Container fluid>
         <div className="main-header__inner">
-          <Navigation links={links} />
+          <Navigation links={links} defaultOpen={true} />
           <Link href="/" className="main-logo">
             <Image
               src="/logo.webp"

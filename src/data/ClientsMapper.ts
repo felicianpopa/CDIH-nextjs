@@ -37,7 +37,9 @@ export class ClientsMapper {
     this.orders = response.orders || 0;
 
     // Ensure billingAddresses is an array and initialize the first element properly
-    const billing = response.billingAddresses?.[0] || {};
+    // Use type assertion to handle the empty object case
+    const billing =
+      response.billingAddresses?.[0] || ({} as Partial<BillingAddress>);
 
     this.billingAddresses = [
       {
