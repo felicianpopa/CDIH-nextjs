@@ -527,17 +527,27 @@ export default function NewOfferClient({
   // Get clients with React Query
   const { getClients } = useClientsApi();
   const {
-    data: clientsData = [],
+    data: clientsData = {
+      "hydra:member": [],
+      "hydra:totalItems": 0,
+    } as HydraCollection<any>,
     isLoading: clientsLoading,
     isError: clientsError,
-  } = useQuery(["clientsData"], () => getClients(), {
-    onError: (error) => {
-      console.error("Error fetching clientsData: ", error);
-      showNotification("error", "Failed to load clients data");
-    },
+    error: clientsErrorDetails,
+  } = useQuery({
+    queryKey: ["clientsData"],
+    queryFn: () => getClients(),
     refetchOnWindowFocus: false,
     staleTime: 60000, // Consider clients data fresh for 1 minute
   });
+
+  // Handle errors from clients query
+  React.useEffect(() => {
+    if (clientsError && clientsErrorDetails) {
+      console.error("Error fetching clientsData: ", clientsErrorDetails);
+      showNotification("error", "Failed to load clients data");
+    }
+  }, [clientsError, clientsErrorDetails]);
 
   const mappedClients = clientsData["hydra:member"]
     ? clientsData["hydra:member"].map((client: any) =>

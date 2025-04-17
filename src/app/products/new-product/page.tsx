@@ -12,9 +12,10 @@ const NewProduct = () => {
   const { createProduct } = useProductsApi();
   const queryClient = useQueryClient();
 
-  const createProductMutation = useMutation(createProduct, {
+  const createProductMutation = useMutation({
+    mutationFn: createProduct,
     onSuccess: () => {
-      queryClient.invalidateQueries(["productsData"]);
+      queryClient.invalidateQueries({ queryKey: ["productsData"] });
     },
     onError: (error) => {
       console.error("Error adding product: ", error);
@@ -192,11 +193,11 @@ const NewProduct = () => {
             <div className="card-body">
               <DynamicForm formData={formData} submitData={handleSubmitData}>
                 <button
-                  disabled={createProductMutation.isLoading}
+                  disabled={createProductMutation.isPending}
                   type="submit"
                   className="btn btn-primary"
                 >
-                  {createProductMutation.isLoading
+                  {createProductMutation.isPending
                     ? "Saving..."
                     : "Save product"}
                 </button>

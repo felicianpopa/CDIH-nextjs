@@ -12,6 +12,19 @@ import Layout from "@/components/Layout";
 import RequireAuth from "@/components/RequireAuth";
 import { mainConfigurations } from "@/configurations/mainConfigurations";
 
+// Define interfaces for hydra collection responses
+interface HydraCollection<T> {
+  "hydra:member": T[];
+  "hydra:totalItems": number;
+}
+
+interface Offer {
+  id: string;
+  status: string;
+  client: any;
+  [key: string]: any;
+}
+
 const Offers = () => {
   const { getOffers, deleteOffer, downloadOffer } = useOffersApi();
   const queryClient = useQueryClient();
@@ -19,16 +32,25 @@ const Offers = () => {
   const [dataUrl, setDataUrl] = useState({});
 
   const {
-    data: offersData = [],
+    data: offersData = {
+      "hydra:member": [],
+      "hydra:totalItems": 0,
+    } as HydraCollection<any>,
     isLoading: offersLoading,
     isError,
     error,
-  } = useQuery(["offersData", dataUrl], () => getOffers(dataUrl), {
-    onError: (error) => {
-      console.error("Error fetching offersData: ", error);
-    },
+  } = useQuery({
+    queryKey: ["offersData", dataUrl],
+    queryFn: () => getOffers(dataUrl),
     refetchOnWindowFocus: false,
   });
+
+  // Log errors when they occur
+  React.useEffect(() => {
+    if (isError && error) {
+      console.error("Error fetching offersData: ", error);
+    }
+  }, [isError, error]);
 
   const mappedOffers = offersData["hydra:member"]
     ? offersData["hydra:member"].map((offer: any) => OffersMapper.map(offer))
@@ -56,7 +78,7 @@ const Offers = () => {
       </Link>
       <button
         onClick={() => handleDeleteOffer(row)}
-        disabled={deleteOfferMutation.isLoading}
+        disabled={deleteOfferMutation.isPending}
         className="btn btn-outline-danger"
       >
         <FontAwesomeIcon icon={faTrash} />
@@ -76,11 +98,12 @@ const Offers = () => {
     }));
   };
 
-  const deleteOfferMutation = useMutation(deleteOffer, {
+  const deleteOfferMutation = useMutation({
+    mutationFn: deleteOffer,
     onSuccess: () => {
-      queryClient.invalidateQueries(["offersData"]);
+      queryClient.invalidateQueries({ queryKey: ["offersData"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error deleting offer: ", error);
     },
   });

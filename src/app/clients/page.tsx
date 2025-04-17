@@ -11,6 +11,23 @@ import { mainConfigurations } from "@/configurations/mainConfigurations";
 import RequireAuth from "@/components/RequireAuth";
 import Layout from "@/components/Layout";
 
+// Define interfaces for hydra collection responses
+interface HydraCollection<T> {
+  "hydra:member": T[];
+  "hydra:totalItems": number;
+}
+
+interface Client {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  orders: any[];
+  billingAddresses: any[];
+  [key: string]: any;
+}
+
 const Clients = () => {
   const { getClients, createClient, saveEditClient, deleteClient } =
     useClientsApi();
@@ -18,15 +35,25 @@ const Clients = () => {
   const [dataUrl, setDataUrl] = useState({});
 
   const {
-    data: clientsData = [],
+    data: clientsData = {
+      "hydra:member": [],
+      "hydra:totalItems": 0,
+    } as HydraCollection<any>,
     isLoading,
     isError,
-  } = useQuery(["clientsData", dataUrl], () => getClients(dataUrl), {
-    onError: (error) => {
-      console.error("Error fetching clientsData: ", error);
-    },
+    error,
+  } = useQuery({
+    queryKey: ["clientsData", dataUrl],
+    queryFn: () => getClients(dataUrl),
     refetchOnWindowFocus: false,
   });
+
+  // Log errors when they occur
+  React.useEffect(() => {
+    if (isError && error) {
+      console.error("Error fetching clientsData: ", error);
+    }
+  }, [isError, error]);
 
   const mappedClients = clientsData["hydra:member"]
     ? clientsData["hydra:member"].map((client: any) =>
@@ -34,11 +61,12 @@ const Clients = () => {
       )
     : [];
 
-  const createClientMutation = useMutation(createClient, {
+  const createClientMutation = useMutation({
+    mutationFn: createClient,
     onSuccess: () => {
-      queryClient.invalidateQueries(["clientsData"]);
+      queryClient.invalidateQueries({ queryKey: ["clientsData"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error creating client: ", error);
     },
   });
@@ -47,11 +75,12 @@ const Clients = () => {
     createClientMutation.mutate(newClientData);
   };
 
-  const editClientMutation = useMutation(saveEditClient, {
+  const editClientMutation = useMutation({
+    mutationFn: saveEditClient,
     onSuccess: () => {
-      queryClient.invalidateQueries(["clientsData"]);
+      queryClient.invalidateQueries({ queryKey: ["clientsData"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error creating client: ", error);
     },
   });
@@ -60,11 +89,12 @@ const Clients = () => {
     editClientMutation.mutate(newClientData);
   };
 
-  const deleteClientMutation = useMutation(deleteClient, {
+  const deleteClientMutation = useMutation({
+    mutationFn: deleteClient,
     onSuccess: () => {
-      queryClient.invalidateQueries(["clientsData"]);
+      queryClient.invalidateQueries({ queryKey: ["clientsData"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error deleting client: ", error);
     },
   });
@@ -101,7 +131,7 @@ const Clients = () => {
       <button
         className="btn btn-outline-danger"
         onClick={() => handleDeleteClient(row)}
-        disabled={deleteClientMutation.isLoading}
+        disabled={deleteClientMutation.isPending}
       >
         <FontAwesomeIcon icon={faTrash} />
       </button>

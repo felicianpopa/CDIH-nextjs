@@ -12,21 +12,47 @@ import Layout from "@/components/Layout";
 import RequireAuth from "@/components/RequireAuth";
 import { mainConfigurations } from "@/configurations/mainConfigurations";
 
+// Define interfaces for hydra collection responses
+interface HydraCollection<T> {
+  "hydra:member": T[];
+  "hydra:totalItems": number;
+}
+
+interface Product {
+  id: string;
+  sku: string;
+  name: string;
+  price: number;
+  unit: string;
+  status: string;
+  [key: string]: any;
+}
+
 const Products = () => {
   const { getProducts, deleteProduct } = useProductsApi();
   const queryClient = useQueryClient();
   const [dataUrl, setDataUrl] = useState({});
 
   const {
-    data: productsData = [],
+    data: productsData = {
+      "hydra:member": [],
+      "hydra:totalItems": 0,
+    } as HydraCollection<any>,
     isLoading,
     isError,
-  } = useQuery(["productsData", dataUrl], () => getProducts(dataUrl), {
-    onError: (error) => {
-      console.error("Error fetching productsData: ", error);
-    },
+    error,
+  } = useQuery({
+    queryKey: ["productsData", dataUrl],
+    queryFn: () => getProducts(dataUrl),
     refetchOnWindowFocus: false,
   });
+
+  // Log errors when they occur
+  React.useEffect(() => {
+    if (isError && error) {
+      console.error("Error fetching productsData: ", error);
+    }
+  }, [isError, error]);
 
   const mappedProducts = productsData["hydra:member"]
     ? productsData["hydra:member"].map((product: any) =>
@@ -34,11 +60,12 @@ const Products = () => {
       )
     : [];
 
-  const deleteProductMutation = useMutation(deleteProduct, {
+  const deleteProductMutation = useMutation({
+    mutationFn: deleteProduct,
     onSuccess: () => {
-      queryClient.invalidateQueries(["productsData"]);
+      queryClient.invalidateQueries({ queryKey: ["productsData"] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error deleting product: ", error);
     },
   });
@@ -71,7 +98,7 @@ const Products = () => {
       <button
         className="btn btn-outline-danger"
         onClick={() => handleDeleteProduct(row)}
-        disabled={deleteProductMutation.isLoading}
+        disabled={deleteProductMutation.isPending}
       >
         <FontAwesomeIcon icon={faTrash} />
       </button>
