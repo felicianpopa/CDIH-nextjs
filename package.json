@@ -20,7 +20,6 @@
     "@tanstack/react-query": "^5.74.3",
     "@tanstack/react-query-devtools": "^5.74.3",
     "Configurator": "bitbucket:bootintech1/configurator#main",
-    "FE-utils": "bitbucket:bootintech1/fe-utils#master",
     "Frontend-utils": "github:bogdancosteabootintech/frontend-utils#main",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.3",

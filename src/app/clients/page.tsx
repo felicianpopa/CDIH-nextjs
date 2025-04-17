@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DataTable, DataModal } from "FE-utils";
+import { DataTable, DataModal } from "Frontend-utils";
 import useClientsApi from "@/api/clientsApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClientsMapper } from "@/data/ClientsMapper";

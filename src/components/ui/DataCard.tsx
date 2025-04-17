@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import { DataCardSimple } from "FE-utils";
+import { DataCardSimple } from "Frontend-utils";
 
 export interface DataCardItemProps {
   cardData: {

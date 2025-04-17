@@ -80,7 +80,7 @@ interface Product {
 
 // Import components dynamically with improved loading states
 const DataCardSimple = dynamic(
-  () => import("FE-utils").then((mod) => mod.DataCardSimple),
+  () => import("Frontend-utils").then((mod) => mod.DataCardSimple),
   {
     ssr: false,
     loading: () => (

@@ -3,7 +3,7 @@
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useProductsApi from "@/api/productsApi";
-import { DynamicForm } from "FE-utils";
+import { DynamicForm } from "Frontend-utils";
 import Layout from "@/components/Layout";
 import RequireAuth from "@/components/RequireAuth";
 import { mainConfigurations } from "@/configurations/mainConfigurations";

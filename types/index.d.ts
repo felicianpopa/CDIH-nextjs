@@ -41,7 +41,7 @@ declare module "navigation-next" {
   >;
 }
 
-declare module "FE-utils" {
+declare module "Frontend-utils" {
   export const DataTable: React.FC<{
     tableHeaderExtraActions?: React.ReactNode;
     tableHead: string[];
