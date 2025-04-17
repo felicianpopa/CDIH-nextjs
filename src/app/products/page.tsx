@@ -45,6 +45,8 @@ const Products = () => {
     queryKey: ["productsData", dataUrl],
     queryFn: () => getProducts(dataUrl),
     refetchOnWindowFocus: false,
+    // Only enable the query when dataUrl has some properties (not empty)
+    enabled: Object.keys(dataUrl).length > 0,
   });
 
   // Log errors when they occur
@@ -75,7 +77,6 @@ const Products = () => {
   };
 
   const handleDataChange = (value: any) => {
-    console.warn("data change ", value);
     setDataUrl((prevDataUrl) => ({
       ...prevDataUrl,
       ...value,

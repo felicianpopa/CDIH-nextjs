@@ -46,6 +46,8 @@ const Clients = () => {
     queryKey: ["clientsData", dataUrl],
     queryFn: () => getClients(dataUrl),
     refetchOnWindowFocus: false,
+    // Only enable the query when dataUrl has some properties (not empty)
+    enabled: Object.keys(dataUrl).length > 0,
   });
 
   // Log errors when they occur
@@ -104,7 +106,6 @@ const Clients = () => {
   };
 
   const handleDataChange = (value: any) => {
-    console.warn("data change ", value);
     setDataUrl((prevDataUrl) => ({
       ...prevDataUrl,
       ...value,
@@ -385,7 +386,6 @@ const Clients = () => {
   );
 
   const openEditModal = (row: any) => {
-    console.warn("row ", row.firstName);
     setCurrentRow(row);
     setModalAction(
       <button type="submit" className="btn btn-primary">

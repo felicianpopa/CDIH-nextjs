@@ -43,6 +43,8 @@ const Offers = () => {
     queryKey: ["offersData", dataUrl],
     queryFn: () => getOffers(dataUrl),
     refetchOnWindowFocus: false,
+    // Only enable the query when dataUrl has some properties (not empty)
+    enabled: Object.keys(dataUrl).length > 0,
   });
 
   // Log errors when they occur
@@ -91,7 +93,6 @@ const Offers = () => {
   };
 
   const handleDataChange = (value: any) => {
-    console.warn("data change ", value);
     setDataUrl((prevDataUrl) => ({
       ...prevDataUrl,
       ...value,
