@@ -28,10 +28,30 @@ interface Product {
   [key: string]: any;
 }
 
+// Define filter interfaces
+interface FilterOption {
+  value: string | number;
+  label: string;
+}
+
+interface Filter {
+  type: "select" | "text";
+  urlValue: string;
+  label?: string;
+  placeholder?: string;
+  values?: FilterOption[];
+}
+
 const Products = () => {
   const { getProducts, deleteProduct } = useProductsApi();
   const queryClient = useQueryClient();
-  const [dataUrl, setDataUrl] = useState({});
+  const [dataUrl, setDataUrl] = useState({
+    items_per_page: 10,
+    status: "all",
+    sortBy: "name",
+    name: "",
+    sku: "",
+  });
 
   const {
     data: productsData = {
@@ -106,6 +126,51 @@ const Products = () => {
     </div>
   );
 
+  // Configure filters for the DataTable
+  const filters: Filter[] = [
+    {
+      type: "select",
+      urlValue: "items_per_page",
+      label: "Items per page",
+      values: [
+        { value: 5, label: "5" },
+        { value: 10, label: "10" },
+        { value: 20, label: "20" },
+        { value: 50, label: "50" },
+      ],
+    },
+    {
+      type: "select",
+      urlValue: "status",
+      label: "Status",
+      values: [
+        { value: "all", label: "All" },
+        { value: "active", label: "Active" },
+        { value: "inactive", label: "Inactive" },
+      ],
+    },
+    {
+      type: "select",
+      urlValue: "sortBy",
+      label: "Sort By",
+      values: [
+        { value: "name", label: "Name" },
+        { value: "price", label: "Price" },
+        { value: "sku", label: "SKU" },
+      ],
+    },
+    {
+      type: "text",
+      urlValue: "name",
+      placeholder: "Search by name",
+    },
+    {
+      type: "text",
+      urlValue: "sku",
+      placeholder: "Search by SKU",
+    },
+  ];
+
   if (isError) {
     return <div>Error loading products. Please try again later.</div>;
   }
@@ -121,11 +186,11 @@ const Products = () => {
             tableHead={tableHead}
             tableBody={mappedProducts}
             shownElements={["sku", "name", "price", "unit", "status"]}
-            tableActions={tableActions}
-            onDataChange={handleDataChange}
-            itemsPerPage={[10, 20, 50]}
             dataLoading={isLoading}
+            onDataChange={handleDataChange}
             totalItems={productsData["hydra:totalItems"]}
+            tableActions={tableActions}
+            filters={filters}
           />
         </>
       </Layout>

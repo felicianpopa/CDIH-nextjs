@@ -28,11 +28,32 @@ interface Client {
   [key: string]: any;
 }
 
+// Define filter interfaces
+interface FilterOption {
+  value: string | number;
+  label: string;
+}
+
+interface Filter {
+  type: "select" | "text";
+  urlValue: string;
+  label?: string;
+  placeholder?: string;
+  values?: FilterOption[];
+}
+
 const Clients = () => {
   const { getClients, createClient, saveEditClient, deleteClient } =
     useClientsApi();
   const queryClient = useQueryClient();
-  const [dataUrl, setDataUrl] = useState({});
+  const [dataUrl, setDataUrl] = useState({
+    items_per_page: 10,
+    status: "all",
+    sortBy: "lastName",
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
 
   const {
     data: clientsData = {
@@ -491,6 +512,46 @@ const Clients = () => {
     }
   };
 
+  // Configure filters for the DataTable
+  const filters: Filter[] = [
+    {
+      type: "select",
+      urlValue: "items_per_page",
+      label: "Items per page",
+      values: [
+        { value: 5, label: "5" },
+        { value: 10, label: "10" },
+        { value: 20, label: "20" },
+        { value: 50, label: "50" },
+      ],
+    },
+    {
+      type: "select",
+      urlValue: "status",
+      label: "Status",
+      values: [
+        { value: "all", label: "All" },
+        { value: "active", label: "Active" },
+        { value: "inactive", label: "Inactive" },
+      ],
+    },
+    {
+      type: "select",
+      urlValue: "sortBy",
+      label: "Sort By",
+      values: [
+        { value: "firstName", label: "First Name" },
+        { value: "lastName", label: "Last Name" },
+        { value: "email", label: "Email" },
+      ],
+    },
+    {
+      type: "text",
+      urlValue: "search",
+      placeholder: "Search",
+    },
+  ];
+
   if (isError) {
     return <div>Error loading clients. Please try again later.</div>;
   }
@@ -514,9 +575,9 @@ const Clients = () => {
             ]}
             tableActions={tableActions}
             onDataChange={handleDataChange}
-            itemsPerPage={[10, 20, 50]}
             dataLoading={isLoading}
             totalItems={clientsData["hydra:totalItems"]}
+            filters={filters}
           />
           <DataModal
             showDataModal={showDataModal}

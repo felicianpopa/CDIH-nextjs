@@ -6,7 +6,10 @@ import { useRouter } from "next/navigation";
 interface ProductsParams {
   page?: number;
   items_per_page?: number;
-  search?: string;
+  status?: string;
+  sortBy?: string;
+  name?: string;
+  sku?: string;
 }
 
 const useProductsApi = () => {
@@ -19,7 +22,14 @@ const useProductsApi = () => {
   const router = useRouter();
 
   const getProducts = async (productsParams: ProductsParams = {}) => {
-    const { page = 1, items_per_page = 10, search = "" } = productsParams;
+    const {
+      page = 1,
+      items_per_page = 10,
+      status = "all",
+      sortBy = "",
+      name = "",
+      sku = "",
+    } = productsParams;
     const token = cookies.bitUser?.token;
 
     if (!token) {
@@ -28,8 +38,28 @@ const useProductsApi = () => {
     }
 
     try {
+      let queryParams = new URLSearchParams();
+      queryParams.append("page", page.toString());
+      queryParams.append("itemsPerPage", items_per_page.toString());
+
+      if (status && status !== "all") {
+        queryParams.append("status", status);
+      }
+
+      if (sortBy) {
+        queryParams.append("sort", sortBy);
+      }
+
+      if (name) {
+        queryParams.append("name", name);
+      }
+
+      if (sku) {
+        queryParams.append("sku", sku);
+      }
+
       const response = await axiosInstance.get(
-        `${config.routes.products}?page=${page}&itemsPerPage=${items_per_page}&search=${search}`,
+        `${config.routes.products}?${queryParams.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

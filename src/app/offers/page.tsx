@@ -25,11 +25,42 @@ interface Offer {
   [key: string]: any;
 }
 
+// Define filter interfaces and data URL types
+interface DataUrlType {
+  items_per_page: number;
+  status: string;
+  sortBy: string;
+  sort_by?: string;
+  search?: string;
+  client: string;
+  offerNumber: string;
+  [key: string]: string | number | undefined;
+}
+
+interface FilterOption {
+  value: string | number;
+  label: string;
+}
+
+interface Filter {
+  type: "select" | "text";
+  urlValue: string; // Changed to strictly string
+  label?: string;
+  placeholder?: string;
+  values?: FilterOption[];
+}
+
 const Offers = () => {
   const { getOffers, deleteOffer, downloadOffer } = useOffersApi();
   const queryClient = useQueryClient();
 
-  const [dataUrl, setDataUrl] = useState({});
+  const [dataUrl, setDataUrl] = useState<DataUrlType>({
+    items_per_page: 10,
+    status: "all",
+    sortBy: "createdAt",
+    client: "",
+    offerNumber: "",
+  });
 
   const {
     data: offersData = {
@@ -113,6 +144,81 @@ const Offers = () => {
     deleteOfferMutation.mutate(client);
   };
 
+  // Configure filters for the DataTable
+  const filters: Filter[] = [
+    {
+      type: "select",
+      urlValue: "items_per_page",
+      label: "Items per page",
+      values: [
+        { value: 5, label: "5" },
+        { value: 10, label: "10" },
+        { value: 20, label: "20" },
+        { value: 50, label: "50" },
+      ],
+    },
+    {
+      type: "select",
+      urlValue: "sort_by",
+      label: "Sort By",
+      values: [
+        { value: "createdAt", label: "Created Date" },
+        { value: "updatedAt", label: "Updated Date" },
+        { value: "total", label: "Total Amount" },
+      ],
+    },
+    {
+      type: "text",
+      urlValue: "search",
+      placeholder: "Search",
+    },
+  ];
+
+  // Custom filter component to render filters
+  const FilterComponent = () => (
+    <div className="row mb-3 gx-3">
+      {filters.map((filter, index) => (
+        <div key={index} className="col-md-auto col-6 mb-2">
+          {filter.type === "select" ? (
+            <div className="form-group">
+              {filter.label && (
+                <label className="form-label">{filter.label}</label>
+              )}
+              <select
+                className="form-select"
+                value={dataUrl[filter.urlValue] || ""}
+                onChange={(e) =>
+                  handleDataChange({ [filter.urlValue]: e.target.value })
+                }
+              >
+                {filter.values?.map((option, optIndex) => (
+                  <option key={optIndex} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="form-group">
+              {filter.label && (
+                <label className="form-label">{filter.label}</label>
+              )}
+              <input
+                type="text"
+                className="form-control"
+                placeholder={filter.placeholder}
+                value={dataUrl[filter.urlValue] || ""}
+                onChange={(e) =>
+                  handleDataChange({ [filter.urlValue]: e.target.value })
+                }
+              />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <RequireAuth allowedRoles={[mainConfigurations.user.roles.user]}>
       <Layout>
@@ -120,7 +226,9 @@ const Offers = () => {
           <h1 className="page-title">Offers</h1>
 
           {isError && (
-            <div>Error fetching offers: {(error as any)?.message}</div>
+            <div className="alert alert-danger">
+              Error fetching offers: {(error as any)?.message}
+            </div>
           )}
 
           <DataTable
@@ -128,11 +236,11 @@ const Offers = () => {
             tableHead={["Id", "Status", "Client", "Actions"]}
             tableBody={mappedOffers}
             shownElements={["id", "status", "client"]}
-            itemsPerPage={[5, 10, 20, 50]}
             dataLoading={offersLoading}
             onDataChange={handleDataChange}
             totalItems={offersData["hydra:totalItems"]}
             tableActions={tableActions}
+            filters={filters}
           />
         </>
       </Layout>

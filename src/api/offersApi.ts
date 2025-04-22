@@ -7,6 +7,7 @@ interface OffersParams {
   page?: number;
   items_per_page?: number;
   search?: string;
+  sort_by?: string;
 }
 
 interface OfferData {
@@ -27,7 +28,12 @@ const useOffersApi = () => {
   const router = useRouter();
 
   const getOffers = async (offersParams: OffersParams = {}) => {
-    const { page = 1, items_per_page = 10, search = "" } = offersParams;
+    const {
+      page = 1,
+      items_per_page = 10,
+      search = "",
+      sort_by,
+    } = offersParams;
     const token = cookies.bitUser?.token;
 
     if (!token) {
@@ -37,7 +43,7 @@ const useOffersApi = () => {
 
     try {
       const response = await axiosInstance.get(
-        `${config.routes.offers}?page=${page}&itemsPerPage=${items_per_page}&search=${search}`,
+        `${config.routes.offers}?page=${page}&itemsPerPage=${items_per_page}&search=${search}&sort_by=${sort_by}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

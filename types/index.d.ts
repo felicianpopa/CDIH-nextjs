@@ -42,6 +42,19 @@ declare module "navigation-next" {
 }
 
 declare module "Frontend-utils" {
+  interface FilterOption {
+    value: string | number;
+    label: string;
+  }
+
+  interface Filter {
+    type: "select" | "text";
+    urlValue: string;
+    label?: string;
+    placeholder?: string;
+    values?: FilterOption[];
+  }
+
   export const DataTable: React.FC<{
     tableHeaderExtraActions?: React.ReactNode;
     tableHead: string[];
@@ -52,6 +65,7 @@ declare module "Frontend-utils" {
     itemsPerPage?: number[];
     dataLoading?: boolean;
     totalItems?: number;
+    filters?: Filter[];
   }>;
 
   export const DataModal: React.FC<{

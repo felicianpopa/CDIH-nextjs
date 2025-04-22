@@ -4,7 +4,11 @@ import { useAuth } from "@/hooks/useAuth";
 interface ClientsParams {
   page?: number;
   items_per_page?: number;
-  search?: string;
+  status?: string;
+  sortBy?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
 }
 
 const useClientsApi = () => {
@@ -12,12 +16,44 @@ const useClientsApi = () => {
   const { apiRequest, axiosInstance, config } = useAuth();
 
   const getClients = async (clientsParams: ClientsParams = {}) => {
-    const { page = 1, items_per_page = 10, search = "" } = clientsParams;
+    const {
+      page = 1,
+      items_per_page = 10,
+      status = "all",
+      sortBy = "",
+      firstName = "",
+      lastName = "",
+      email = "",
+    } = clientsParams;
+
+    let queryParams = new URLSearchParams();
+    queryParams.append("page", page.toString());
+    queryParams.append("itemsPerPage", items_per_page.toString());
+
+    if (status && status !== "all") {
+      queryParams.append("status", status);
+    }
+
+    if (sortBy) {
+      queryParams.append("sort", sortBy);
+    }
+
+    if (firstName) {
+      queryParams.append("firstName", firstName);
+    }
+
+    if (lastName) {
+      queryParams.append("lastName", lastName);
+    }
+
+    if (email) {
+      queryParams.append("email", email);
+    }
 
     try {
       // Get the user ID from cookies instead of config
       return await apiRequest(
-        `/api/users/${apiRequest.getUserId()}/clients?page=${page}&itemsPerPage=${items_per_page}&search=${search}`,
+        `/api/users/${apiRequest.getUserId()}/clients?${queryParams.toString()}`,
         { method: "GET" }
       );
     } catch (error) {
