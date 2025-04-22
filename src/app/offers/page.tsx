@@ -27,13 +27,13 @@ interface Offer {
 
 // Define filter interfaces and data URL types
 interface DataUrlType {
-  items_per_page: number;
-  status: string;
-  sortBy: string;
+  items_per_page?: number;
+  status?: string;
+  sortBy?: string;
   sort_by?: string;
   search?: string;
-  client: string;
-  offerNumber: string;
+  client?: string;
+  offerNumber?: string;
   [key: string]: string | number | undefined;
 }
 
@@ -54,13 +54,7 @@ const Offers = () => {
   const { getOffers, deleteOffer, downloadOffer } = useOffersApi();
   const queryClient = useQueryClient();
 
-  const [dataUrl, setDataUrl] = useState<DataUrlType>({
-    items_per_page: 10,
-    status: "all",
-    sortBy: "createdAt",
-    client: "",
-    offerNumber: "",
-  });
+  const [dataUrl, setDataUrl] = useState<DataUrlType>({});
 
   const {
     data: offersData = {

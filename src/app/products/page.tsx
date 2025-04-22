@@ -45,13 +45,7 @@ interface Filter {
 const Products = () => {
   const { getProducts, deleteProduct } = useProductsApi();
   const queryClient = useQueryClient();
-  const [dataUrl, setDataUrl] = useState({
-    items_per_page: 10,
-    status: "all",
-    sortBy: "name",
-    name: "",
-    sku: "",
-  });
+  const [dataUrl, setDataUrl] = useState({});
 
   const {
     data: productsData = {

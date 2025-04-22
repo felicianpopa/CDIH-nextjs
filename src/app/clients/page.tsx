@@ -46,14 +46,7 @@ const Clients = () => {
   const { getClients, createClient, saveEditClient, deleteClient } =
     useClientsApi();
   const queryClient = useQueryClient();
-  const [dataUrl, setDataUrl] = useState({
-    items_per_page: 10,
-    status: "all",
-    sortBy: "lastName",
-    firstName: "",
-    lastName: "",
-    email: "",
-  });
+  const [dataUrl, setDataUrl] = useState({});
 
   const {
     data: clientsData = {
