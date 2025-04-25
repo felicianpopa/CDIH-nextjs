@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DataTable } from "Frontend-utils";
+import { DataTable, BitFilters } from "Frontend-utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useOffersApi from "@/api/offersApi";
 import { OffersMapper } from "@/data/OffersMapper";
@@ -168,51 +168,6 @@ const Offers = () => {
     },
   ];
 
-  // Custom filter component to render filters
-  const FilterComponent = () => (
-    <div className="row mb-3 gx-3">
-      {filters.map((filter, index) => (
-        <div key={index} className="col-md-auto col-6 mb-2">
-          {filter.type === "select" ? (
-            <div className="form-group">
-              {filter.label && (
-                <label className="form-label">{filter.label}</label>
-              )}
-              <select
-                className="form-select"
-                value={dataUrl[filter.urlValue] || ""}
-                onChange={(e) =>
-                  handleDataChange({ [filter.urlValue]: e.target.value })
-                }
-              >
-                {filter.values?.map((option, optIndex) => (
-                  <option key={optIndex} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : (
-            <div className="form-group">
-              {filter.label && (
-                <label className="form-label">{filter.label}</label>
-              )}
-              <input
-                type="text"
-                className="form-control"
-                placeholder={filter.placeholder}
-                value={dataUrl[filter.urlValue] || ""}
-                onChange={(e) =>
-                  handleDataChange({ [filter.urlValue]: e.target.value })
-                }
-              />
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <RequireAuth allowedRoles={[mainConfigurations.user.roles.user]}>
       <Layout>
@@ -225,6 +180,15 @@ const Offers = () => {
             </div>
           )}
 
+          <div className="card mb-4">
+            <div className="card-header">
+              <h5>Filters</h5>
+            </div>
+            <div className="card-body">
+              <BitFilters filters={filters} onDataChange={handleDataChange} />
+            </div>
+          </div>
+
           <DataTable
             tableHeaderExtraActions={<ExtraComponent />}
             tableHead={["Id", "Status", "Client", "Actions"]}
@@ -234,7 +198,6 @@ const Offers = () => {
             onDataChange={handleDataChange}
             totalItems={offersData["hydra:totalItems"]}
             tableActions={tableActions}
-            filters={filters}
           />
         </>
       </Layout>

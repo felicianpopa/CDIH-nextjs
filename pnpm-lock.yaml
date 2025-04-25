@@ -43,7 +43,7 @@ importers:
         version: git+https://git@bitbucket.org:bootintech1/configurator.git#779f55fb27bdabb2b942bc81ad106e40fd05eb65(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(webpack@5.99.5)
       Frontend-utils:
         specifier: github:bogdancosteabootintech/frontend-utils#main
-        version: git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#3ab26af128956b94494e8f44a421c8d94d60451c(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#0a058306abaf8cf70a0800a5f25c9798135000bf(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       axios:
         specifier: ^1.6.0
         version: 1.8.4
@@ -1464,9 +1464,9 @@ packages:
       react: ^18.2.0
       react-dom: ^18.2.0
 
-  Frontend-utils@git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#3ab26af128956b94494e8f44a421c8d94d60451c:
-    resolution: {commit: 3ab26af128956b94494e8f44a421c8d94d60451c, repo: git@github.com:bogdancosteabootintech/frontend-utils.git, type: git}
-    version: 1.1.0
+  Frontend-utils@git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#0a058306abaf8cf70a0800a5f25c9798135000bf:
+    resolution: {commit: 0a058306abaf8cf70a0800a5f25c9798135000bf, repo: git@github.com:bogdancosteabootintech/frontend-utils.git, type: git}
+    version: 1.2.0
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -5173,7 +5173,7 @@ snapshots:
       - '@popperjs/core'
       - '@types/react'
 
-  Frontend-utils@git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#3ab26af128956b94494e8f44a421c8d94d60451c(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  Frontend-utils@git+https://git@github.com:bogdancosteabootintech/frontend-utils.git#0a058306abaf8cf70a0800a5f25c9798135000bf(@popperjs/core@2.11.8)(@types/react@18.3.20)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@fortawesome/fontawesome-svg-core': 6.7.2

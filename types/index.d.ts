@@ -65,6 +65,10 @@ declare module "Frontend-utils" {
     itemsPerPage?: number[];
     dataLoading?: boolean;
     totalItems?: number;
+  }>;
+
+  export const BitFilters: React.FC<{
+    onDataChange?: (value: any) => void;
     filters?: Filter[];
   }>;
 
