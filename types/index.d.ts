@@ -6,7 +6,8 @@ declare module "Configurator" {
     initialData: any;
     data: any;
     saveDataAction: (data: any) => void;
-    calculatePriceAction: (data: any) => void;
+    emitSelectedOptions: (data: any) => void;
+    showSaveButton: boolean;
   }>;
 }
 

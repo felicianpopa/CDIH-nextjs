@@ -33,6 +33,12 @@ import { mainConfigurations } from "@/configurations/mainConfigurations";
 import { createOffer, updateOffer } from "./actions";
 import LoadingFallback from "./loading";
 
+// Define interfaces for hydra collection responses
+interface HydraCollection<T> {
+  "hydra:member": T[];
+  "hydra:totalItems": number;
+}
+
 // Types and interfaces
 interface ConfiguratorProps {
   priceLoading: boolean;
@@ -41,7 +47,6 @@ interface ConfiguratorProps {
   initialData: any;
   data: any;
   saveDataAction: (data: any) => void;
-  calculatePriceAction: (data: any) => void;
   emitSelectedOptions: (data: any) => void;
   showSaveButton: boolean;
 }
@@ -121,7 +126,7 @@ export default function NewOfferClient({
   initialData?: any;
 }) {
   const router = useRouter();
-  const { downloadOffer } = useOffersApi();
+  const { downloadOffer, addOffer, editOffer, getOffer } = useOffersApi();
   const modalRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const [cookies] = useCookies(["bitUser", "bitUserData"]);
@@ -146,10 +151,27 @@ export default function NewOfferClient({
   const [formError, setFormError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  // Add a better notification system
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    type: "success" | "error";
+    message: string;
+  }>({
+    show: false,
+    type: "success",
+    message: "",
+  });
+
+  const showNotification = (type: "success" | "error", message: string) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => {
+      setNotification((prev) => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
   // Set initial values from server data on component mount
   useEffect(() => {
     if (initialData) {
-      setProducts(initialData.products || []);
       setValidUntill(initialData.validUntill || "");
       setOrderStatus(initialData.status || "draft");
 
@@ -162,6 +184,34 @@ export default function NewOfferClient({
       }
     }
   }, [initialData]);
+
+  // Fetch offer data using React Query
+  const {
+    data: offerData = {},
+    isLoading: offerLoading,
+    isError: offerError,
+    error: offerErrorDetails,
+  } = useQuery({
+    queryKey: offerId ? ["offerData", offerId] : [],
+    queryFn: () => (offerId ? getOffer(offerId) : Promise.resolve({})),
+    enabled: !!offerId, // Only enable the query if offerId exists
+    refetchOnWindowFocus: false,
+  });
+
+  // Handle errors from offer data query
+  React.useEffect(() => {
+    if (offerError && offerErrorDetails) {
+      console.error("Error fetching offerData: ", offerErrorDetails);
+      showNotification?.("error", "Failed to load offer data");
+    }
+  }, [offerError, offerErrorDetails, showNotification]);
+
+  // Set products from fetched offer data
+  useEffect(() => {
+    if (offerData?.products) {
+      setProducts(offerData.products);
+    }
+  }, [offerData]);
 
   const [offerSummary, setOfferSummary] = useState({
     subtotal: {
@@ -373,6 +423,24 @@ export default function NewOfferClient({
     }
   };
 
+  const handleOfferUpdate = (offerData: any) => {
+    const customEvent = new CustomEvent("external_message", {
+      detail: {
+        type: "system_message",
+        message:
+          "in knowledge.configurator_selected.products you can find all the added products. Ask me if I want to add the same product again and include the product data",
+        threadId: null,
+        knowledge: {
+          configurator_selected: {
+            products: offerData,
+          },
+        },
+      },
+    });
+    window.dispatchEvent(customEvent);
+    console.warn("Custom message event dispatched");
+  };
+
   // Use memoized callbacks for Configurator props
   const handleCalculatePriceAction = useCallback((data: any) => {
     const selectedOptions: { selectedOptions: Record<string, any> } = {
@@ -384,10 +452,89 @@ export default function NewOfferClient({
     getPrice(selectedOptions);
   }, []);
 
+  const editOfferMutation = useMutation({
+    mutationFn: (data: any) => editOffer(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["offersData"] });
+      setProducts(data.products);
+      handleOfferUpdate(data.products);
+    },
+    onError: (error) => {
+      console.error("Error adding offer: ", error);
+    },
+  });
+
+  const addOfferMutation = useMutation({
+    mutationFn: (data: any) => addOffer(data),
+    onSuccess: (data) => {
+      const offerId = data?.id;
+
+      if (offerId) {
+        // Update the URL with the offer_id parameter
+        const url = new URL(window.location.href);
+        url.searchParams.set("offer_id", offerId);
+        window.history.pushState({}, "", url);
+      }
+      queryClient.invalidateQueries({ queryKey: ["offersData"] });
+      setProducts(data.products);
+    },
+    onError: (error) => {
+      console.error("Error adding offer: ", error);
+    },
+  });
+
   const handleAddProductAction = (data: any) => {
-    // First update the products state
+    console.warn("handleAddProductaction");
+    // First update local state
     const updatedProducts = [...products, data];
     setProducts(updatedProducts);
+
+    // Then make the API call separately (not inside state update function)
+    const urlParams = new URLSearchParams(window.location.search);
+    const offerId = urlParams.get("offer_id");
+
+    const offerData = {
+      ...(selectedClient && { client: `/api/clients/${selectedClient}` }),
+      validUntill: validUntill,
+      status: orderStatus,
+      products: updatedProducts.map((product: any) => {
+        const options: Record<string, any> = {};
+
+        // Check if the product has options
+        if (product.options) {
+          // Iterate over the product options if available
+          Object.keys(product.options).forEach((key) => {
+            const option = product.options[key];
+            if (option?.value) {
+              const numericValue = /^[0-9]+$/.test(option.value)
+                ? Number(option.value)
+                : option.value;
+              options[key] = numericValue;
+            }
+          });
+        } else {
+          // Fallback: Iterate over other product properties if options are not available
+          Object.keys(product).forEach((key) => {
+            const prop = product[key];
+            if (prop?.selectedValue) {
+              const numericValue = /^[0-9]+$/.test(prop.selectedValue)
+                ? Number(prop.selectedValue)
+                : prop.selectedValue;
+              options[key] = numericValue;
+            }
+          });
+        }
+        return { options };
+      }),
+      ...(offerId && { id: offerId }),
+    };
+
+    // Call API mutations directly here, not inside a state updater
+    if (offerId) {
+      editOfferMutation.mutate(offerData);
+    } else {
+      addOfferMutation.mutate(offerData);
+    }
 
     // Close the modal
     if (typeof window !== "undefined" && modalRef.current) {
@@ -407,24 +554,6 @@ export default function NewOfferClient({
     const updatedProducts = [...products];
     updatedProducts.splice(index, 1);
     setProducts(updatedProducts);
-  };
-
-  // Add a better notification system
-  const [notification, setNotification] = useState<{
-    show: boolean;
-    type: "success" | "error";
-    message: string;
-  }>({
-    show: false,
-    type: "success",
-    message: "",
-  });
-
-  const showNotification = (type: "success" | "error", message: string) => {
-    setNotification({ show: true, type, message });
-    setTimeout(() => {
-      setNotification((prev) => ({ ...prev, show: false }));
-    }, 5000);
   };
 
   // Submit handler using server actions
@@ -452,7 +581,7 @@ export default function NewOfferClient({
         validUntill: validUntill,
         status: orderStatus,
         products: products.map((product) => {
-          const options: Record<string, any> = {};
+          const options: Record<string, any> = {}; // Add proper type annotation here
 
           if (product.options) {
             Object.keys(product.options).forEach((key) => {
@@ -576,7 +705,6 @@ export default function NewOfferClient({
     initialData: initialConfigData,
     data: configData,
     saveDataAction: handleAddProductAction,
-    calculatePriceAction: handleCalculatePriceAction,
     emitSelectedOptions: handleCalculatePriceAction,
     showSaveButton: true,
   };
